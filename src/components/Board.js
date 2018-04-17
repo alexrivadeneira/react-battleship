@@ -12,12 +12,12 @@ class Board extends Component {
 
   	let spaces = [];
 
-  	for(var i = 0; i < this.props.playerBoard.length; i++){
-  		for(var j = 0; j < this.props.playerBoard[i].length; j++){
+  	for(var row = 0; row < this.props.compBoard.length; row++){
+  		for(var col = 0; col < this.props.compBoard[row].length; col++){
   			spaces.push(
-  				<Space fill={this.props.playerBoard[i][j]}
-  				i={i}
-  				j={j}
+  				<Space fill={this.props.compBoard[row][col]}
+  				row={row}
+  				col={col}
   				/>
   			);
   		}

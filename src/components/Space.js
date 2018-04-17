@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 
 class Space extends Component {
+  handleClick(i,j){
+    console.log(i,j);
+  }
+
   render() {
 
     const colorKey = {
@@ -19,8 +23,12 @@ class Space extends Component {
     }
 
     return (
-      <div className="space" style={spaceStyle}>
-        {this.props.i}, {this.props.j}
+      <div 
+        className="space" 
+        style={spaceStyle}
+        onClick={() => this.handleClick(this.props.row, this.props.col)}
+        >
+          {this.props.row}, {this.props.col}
       </div>
     );
   }
