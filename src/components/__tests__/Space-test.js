@@ -9,6 +9,6 @@ describe('Space Component', () => {
 
 	 it('should have a div with classname space', () => {
 	 	const wrapper = shallow(<Space />);
-	 	expect(wrapper.contains(<div className="space">Space</div>)).toEqual(true);
+	 	expect(wrapper.contains(<div className="space"></div>)).toEqual(true);
 	 });
 })
