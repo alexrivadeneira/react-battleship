@@ -3,11 +3,11 @@ import PlayerShipsMapSpace from './PlayerShipsMapSpace';
 
 class PlayerShipsMap extends Component {
   render() {
-  	const boardStyle = {
-  		width: "270px",
-  		display: "block",
-  		margin: "0 auto",
-  	};
+    const boardStyle = {
+      width: "270px",
+      display: "inline-block",
+      marginRight: "10px",
+    };
 
   	let spaces = [];
   	let index = 0;
@@ -28,6 +28,7 @@ class PlayerShipsMap extends Component {
 
     return (
     	<div style={boardStyle}>
+      <h3>Ships</h3>
     		{spaces}
     	</div>
     );

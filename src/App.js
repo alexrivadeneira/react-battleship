@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import PlayerShipsMap from './components/PlayerShipsMap';
+import Game from '././components/Game';
 
 class App extends Component {
 
@@ -14,14 +14,14 @@ class App extends Component {
 			updateCompShips[row][col] = 2;
 			this.setState({compShips: updateCompShips});
 
-			let updatePlayerBoard = this.state.playerBoard.slice("");
-			updatePlayerBoard[row][col] = 2;
-			this.setState({playerBoard: updatePlayerBoard});
+			let updatePlayerHits = this.state.playerHits.slice("");
+			updatePlayerHits[row][col] = 2;
+			this.setState({playerHits: updatePlayerHits});
 		} else if (this.state.compShips[row][col] === 0){
 			console.log("miss!");
-			let updatePlayerBoard = this.state.playerBoard.slice("");
-			updatePlayerBoard[row][col] = 1;
-			this.setState({playerBoard: updatePlayerBoard});
+			let updatePlayerHits = this.state.playerHits.slice("");
+			updatePlayerHits[row][col] = 1;
+			this.setState({playerHits: updatePlayerHits});
 
 		}
 	}
@@ -85,12 +85,12 @@ class App extends Component {
 
   render() {
     return (
-    	<div>
-	      <PlayerShipsMap 
-	      	playerShips={this.state.playerShips}
-	      	fireMissle={this.fireMissle}
-	      />
-      </div>
+    	<Game
+    		playerShips={this.state.playerShips}
+    		fireMissle={this.fireMissle}
+    		compShips={this.state.compShips}
+    		playerHits={this.state.playerHits}
+    	/>
     );
   }
 }
