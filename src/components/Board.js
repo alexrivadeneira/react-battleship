@@ -18,6 +18,7 @@ class Board extends Component {
   				<Space fill={this.props.compBoard[row][col]}
   				row={row}
   				col={col}
+  				fireMissle={this.props.fireMissle}
   				/>
   			);
   		}

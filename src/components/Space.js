@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 
 class Space extends Component {
-  handleClick(i,j){
-    console.log(i,j);
+  
+  handleClick(row,col){
+    this.props.fireMissle(row,col);
   }
 
   render() {

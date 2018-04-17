@@ -4,7 +4,10 @@ import Board from './Board';
 class Game extends Component {
   render() {
     return (
-      <Board compBoard={this.props.compBoard}/>
+      <Board 
+      	compBoard={this.props.compBoard}
+      	fireMissle={this.props.fireMissle}
+      />
     );
   }
 }
