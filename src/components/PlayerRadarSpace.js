@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-class Space extends Component {
+class PlayerRadarSpace extends Component {
   
   handleClick = (row, col) => {
     this.props.fireMissle(row,col);
@@ -34,4 +34,4 @@ class Space extends Component {
   }
 }
 
-export default Space;
+export default PlayerRadarSpace;
