@@ -5,7 +5,7 @@ class Game extends Component {
   render() {
     return (
       <Board 
-      	compBoard={this.props.compBoard}
+      	playerBoard={this.props.playerBoard}
       	fireMissle={this.props.fireMissle}
       />
     );

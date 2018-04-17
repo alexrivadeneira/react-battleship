@@ -3,23 +3,27 @@ import Game from './components/Game';
 
 class App extends Component {
 
-	handleClick(){
-		console.log(this.state.compShips);
-	}
-
-	fireMissle(row, col){
+	fireMissle = (row, col) => {
+		console.log(row, col);
 		// add source and target args later
 		// check target's shipMap for row and col
-		console.log(this.state.playerBoard);
-		// if(this.state.compShips[row][col] === 1){
-		// 	const updateCompShips = this.state.compShips.splice("");
-		// 	updateCompShips[row][col] = 2;
-		// 	this.setState({compShips: updateCompShips});
+		if(this.state.compShips[row][col] === 1){
+		// got a hit
+			console.log("hit!");
+			let updateCompShips = this.state.compShips.slice("");
+			updateCompShips[row][col] = 2;
+			this.setState({compShips: updateCompShips});
 
-		// 	const updatePlayerBoard = this.state.playerBoard.splice("");
-		// 	updatePlayerBoard[row][col] = 2;
-		// 	this.setState({playerBoard: updatePlayerBoard});
-		// }
+			let updatePlayerBoard = this.state.playerBoard.slice("");
+			updatePlayerBoard[row][col] = 2;
+			this.setState({playerBoard: updatePlayerBoard});
+		} else if (this.state.compShips[row][col] === 0){
+			console.log("miss!");
+			let updatePlayerBoard = this.state.playerBoard.slice("");
+			updatePlayerBoard[row][col] = 1;
+			this.setState({playerBoard: updatePlayerBoard});
+
+		}
 	}
 
 	state = {
@@ -70,13 +74,9 @@ class App extends Component {
     return (
     	<div>
 	      <Game 
-	      	compBoard={this.state.compBoard}
+	      	playerBoard={this.state.playerBoard}
 	      	fireMissle={this.fireMissle}
 	      />
-	      <button
-	      	onClick={() => this.handleClick()}
-	      >Click me
-	      </button>
       </div>
     );
   }

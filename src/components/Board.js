@@ -5,22 +5,24 @@ class Board extends Component {
   render() {
   	const boardStyle = {
   		width: "520px",
-  		border: "3px solid blue",
   		display: "block",
   		margin: "0 auto",
   	};
 
   	let spaces = [];
+  	let index = 0;
 
-  	for(var row = 0; row < this.props.compBoard.length; row++){
-  		for(var col = 0; col < this.props.compBoard[row].length; col++){
+  	for(var row = 0; row < this.props.playerBoard.length; row++){
+  		for(var col = 0; col < this.props.playerBoard[row].length; col++){
   			spaces.push(
-  				<Space fill={this.props.compBoard[row][col]}
+  				<Space fill={this.props.playerBoard[row][col]}
   				row={row}
   				col={col}
   				fireMissle={this.props.fireMissle}
+  				key={index}
   				/>
   			);
+  			index++;
   		}
   	}
 

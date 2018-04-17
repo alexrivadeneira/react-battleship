@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 class Space extends Component {
   
-  handleClick(row,col){
+  handleClick = (row, col) => {
     this.props.fireMissle(row,col);
   }
 
@@ -29,7 +29,6 @@ class Space extends Component {
         style={spaceStyle}
         onClick={() => this.handleClick(this.props.row, this.props.col)}
         >
-          {this.props.row}, {this.props.col}
       </div>
     );
   }
