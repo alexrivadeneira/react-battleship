@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import Space from './components/Space';
+import Game from './components/Game';
 
 class App extends Component {
   render() {
     return (
-      <Space />
+      <Game />
     );
   }
 }
