@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import Space from './Space';
+import PlayerShipsMapSpace from './PlayerShipsMapSpace';
 
-class Board extends Component {
+class PlayerShipsMap extends Component {
   render() {
   	const boardStyle = {
-  		width: "520px",
+  		width: "270px",
   		display: "block",
   		margin: "0 auto",
   	};
@@ -12,13 +12,12 @@ class Board extends Component {
   	let spaces = [];
   	let index = 0;
 
-  	for(var row = 0; row < this.props.playerBoard.length; row++){
-  		for(var col = 0; col < this.props.playerBoard[row].length; col++){
+  	for(var row = 0; row < this.props.playerShips.length; row++){
+  		for(var col = 0; col < this.props.playerShips[row].length; col++){
   			spaces.push(
-  				<Space fill={this.props.playerBoard[row][col]}
+  				<PlayerShipsMapSpace fill={this.props.playerShips[row][col]}
   				row={row}
   				col={col}
-  				fireMissle={this.props.fireMissle}
   				key={index}
   				/>
   			);
@@ -26,7 +25,6 @@ class Board extends Component {
   		}
   	}
 
- 
 
     return (
     	<div style={boardStyle}>
@@ -36,4 +34,4 @@ class Board extends Component {
   }
 }
 
-export default Board;
+export default PlayerShipsMap;

@@ -1,17 +1,12 @@
 import React, { Component } from 'react';
 
-class Space extends Component {
+class PlayerShipsMapSpace extends Component {
   
-  handleClick = (row, col) => {
-    this.props.fireMissle(row,col);
-  }
-
   render() {
 
     const colorKey = {
       0: "blue",
-      1: "cyan",
-      2: "red",
+      1: "grey",
     };
 
     const spaceStyle = {
@@ -27,11 +22,10 @@ class Space extends Component {
       <div 
         className="space" 
         style={spaceStyle}
-        onClick={() => this.handleClick(this.props.row, this.props.col)}
         >
       </div>
     );
   }
 }
 
-export default Space;
+export default PlayerShipsMapSpace;

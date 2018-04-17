@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Game from './components/Game';
+import PlayerShipsMap from './components/PlayerShipsMap';
 
 class App extends Component {
 
@@ -27,7 +27,7 @@ class App extends Component {
 	}
 
 	state = {
-		playerBoard: 
+		playerHits: 
 		[
 			[0,0,0,0,0,0,0,0,0,0],
 			[0,0,0,0,0,0,0,0,0,0],
@@ -41,7 +41,20 @@ class App extends Component {
 			[0,0,0,0,0,0,0,0,0,0],
 		],
 		playerShipUnits: 18,
-		compBoard: 
+		playerShips: 
+		[
+			[0,0,0,0,0,0,0,0,0,0],
+			[0,0,1,0,0,1,1,1,0,0],
+			[0,0,1,0,0,0,0,0,0,0],
+			[0,0,1,0,0,0,0,0,0,1],
+			[0,0,1,0,0,0,0,0,0,1],
+			[0,0,1,0,0,0,0,0,0,1],
+			[0,0,0,0,0,0,0,0,0,1],
+			[0,1,1,1,1,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,1,1,0,0],
+		],			
+		compHits: 
 		[
 			[0,0,0,0,0,0,0,0,0,0],
 			[0,0,0,0,0,0,0,0,0,0],
@@ -73,8 +86,8 @@ class App extends Component {
   render() {
     return (
     	<div>
-	      <Game 
-	      	playerBoard={this.state.playerBoard}
+	      <PlayerShipsMap 
+	      	playerShips={this.state.playerShips}
 	      	fireMissle={this.fireMissle}
 	      />
       </div>
