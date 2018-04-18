@@ -134,7 +134,6 @@ class App extends Component {
   render() {
     return (
     	<div>
-    	{this.state.playersTurn ? <p>Players turn</p> : <p>Comp's turn</p>}
 	    	<Game
 	    		playerShips={this.state.playerShips}
 	    		fireMissle={this.fireMissle}
@@ -143,6 +142,7 @@ class App extends Component {
 
 	    		updateStatusMessage={this.updateStatusMessage}
 	    		statusMessage={this.state.statusMessage}
+	    		playersTurn={this.state.playersTurn}
 	    	/>
     	</div>
     );
