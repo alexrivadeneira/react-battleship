@@ -3,9 +3,11 @@ import React, { Component } from 'react';
 class PlayerRadarSpace extends Component {
   
   handleClick = (row, col) => {
-    this.props.updateStatusMessage("FIRING!");
-
-    this.props.fireMissle(row,col);
+    // only allow click on players turn and while game in progress
+    if(this.props.playersTurn && this.props.gameInProgress){
+      this.props.updateStatusMessage("FIRING!");
+      this.props.fireMissle(this.props.playerHits, this.props.compShips, row,col);     
+    }
   }
 
   render() {

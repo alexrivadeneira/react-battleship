@@ -10,14 +10,18 @@ class App extends Component {
 	}
 
 	changePlayers = () => {
-		this.setState({playersTurn: !this.state.playersTurn}, this.updateMessageAreaIndicateWhoIsPlaying());
+		console.log("changing players");
+	// change the player and check if the computer is playing
+		this.setState({playersTurn: !this.state.playersTurn});
+		this.setState(this.checkCompPlayingAndTriggerCompMove());
 	}
 
-	updateMessageAreaIndicateWhoIsPlaying(){
-		if(this.state.playersTurn){
-			this.updateStatusMessage("Player's turn");
-		} else {
-			this.updateStatusMessage("Computer playing...");
+	checkCompPlayingAndTriggerCompMove(){
+		console.log("checking if comp should move");
+		console.log("PLAYERS TURN?", this.state.playersTurn);
+		if(this.state.playersTurn === false){
+			console.log("TRIGGERING COMP MOVe");
+			this.compMakeRandomMove();
 		}
 	}
 
@@ -25,48 +29,55 @@ class App extends Component {
 		this.setState({statusMessage: newMessage});
 	}
 
-	fireMissle = (row, col) => {
+	fireMissle = (missleSource, missleTarget, row, col) => {
+		// missleSource, missleTarget also passed to processMove -- refactor?
 		console.log(row, col);
 
 		setTimeout(function(){
-			this.processMove(row,col);
+			this.processMove(missleSource, missleTarget, row,col);
 		}.bind(this), 1000);
 		// add source and target args later
 		// check target's shipMap for row and col
-
-
 		this.checkWin();
 	}
 
+	compMakeRandomMove = () => {
+		console.log("comp making move");
+		const row = Math.round(Math.random() * 10);
+		const col = Math.round(Math.random() * 10);
+		this.fireMissle(this.compHits, this.playerShips, row, col);
+	}
 
-	processMove(row,col){
-		if(this.state.playersTurn){
-			if(this.state.compShips[row][col] === 1){
-			// got a hit
-				console.log("hit!");
-				let updateCompShips = this.state.compShips.slice("");
-				updateCompShips[row][col] = 8;
-				this.setState({compShips: updateCompShips});
 
-				let updatePlayerHits = this.state.playerHits.slice("");
-				updatePlayerHits[row][col] = 2;
-				this.setState({playerHits: updatePlayerHits});
+	processMove(missleSource, missleTarget, row,col){
+	// look at target ships map
+	// update source hits map
 
-				this.setState({compShipUnits: this.state.compShipUnits - 1}, this.changePlayers());
+		if(missleTarget[row][col] === 1){
+		// got a hit
+			console.log("hit!");
+			let updateMissleTarget = missleTarget.slice("");
+			updateMissleTarget[row][col] = 8;
+			this.setState({missleTarget: updateMissleTarget});
 
-			// miss
-			} else if (this.state.compShips[row][col] === 0){
-				console.log("miss!");
-				let updatePlayerHits = this.state.playerHits.slice("");
-				updatePlayerHits[row][col] = 1;
-				this.setState({playerHits: updatePlayerHits}, this.changePlayers());
+			let updateMissleSource = missleSource.slice("");
+			updateMissleSource[row][col] = 2;
+			this.setState({missleSource: updateMissleSource}, this.changePlayers());
 
-			// already went here - miss!
-			} else if (this.state.compShips[row][col] === 8){
-				console.log("miss");
-				this.setState(this.changePlayers());
-			}					
-		}
+			// this.setState({compShipUnits: this.state.compShipUnits - 1}, this.changePlayers());
+
+		// miss
+		} else if (missleTarget[row][col] === 0){
+			console.log("miss!");
+			let updateMissleSource = missleSource.slice("");
+			updateMissleSource[row][col] = 1;
+			this.setState({missleSource: updateMissleSource}, this.changePlayers());
+
+		// already went here - miss!
+		} else if (missleTarget[row][col] === 8){
+			console.log("miss");
+			this.setState(this.changePlayers());
+		}	
 
 	}
 
@@ -143,6 +154,7 @@ class App extends Component {
 	    		updateStatusMessage={this.updateStatusMessage}
 	    		statusMessage={this.state.statusMessage}
 	    		playersTurn={this.state.playersTurn}
+	    		gameInProgress={this.state.gameInProgress}
 	    	/>
     	</div>
     );

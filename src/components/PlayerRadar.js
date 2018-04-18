@@ -20,6 +20,11 @@ class PlayerRadar extends Component {
   				key={index}
   				fireMissle={this.props.fireMissle}
           updateStatusMessage={this.props.updateStatusMessage}
+          playersTurn={this.props.playersTurn}
+          gameInProgress={this.props.gameInProgress}
+
+          playerHits={this.props.playerHits}
+          compShips={this.props.compShips}
   				/>
   			);
   			index++;
