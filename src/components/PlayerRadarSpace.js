@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 class PlayerRadarSpace extends Component {
   
   handleClick = (row, col) => {
+    this.props.updateStatusMessage("FIRING!");
+
     this.props.fireMissle(row,col);
   }
 

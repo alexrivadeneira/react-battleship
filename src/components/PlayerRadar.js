@@ -19,6 +19,7 @@ class PlayerRadar extends Component {
   				col={col}
   				key={index}
   				fireMissle={this.props.fireMissle}
+          updateStatusMessage={this.props.updateStatusMessage}
   				/>
   			);
   			index++;
