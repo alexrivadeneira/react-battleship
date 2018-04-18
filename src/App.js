@@ -10,17 +10,13 @@ class App extends Component {
 	}
 
 	changePlayers = () => {
-		console.log("changing players");
 	// change the player and check if the computer is playing
 		this.setState({playersTurn: !this.state.playersTurn});
 		this.setState(this.checkCompPlayingAndTriggerCompMove());
 	}
 
 	checkCompPlayingAndTriggerCompMove(){
-		console.log("checking if comp should move");
-		console.log("PLAYERS TURN?", this.state.playersTurn);
 		if(this.state.playersTurn === false){
-			console.log("TRIGGERING COMP MOVe");
 			this.compMakeRandomMove();
 		}
 	}
@@ -29,12 +25,12 @@ class App extends Component {
 		this.setState({statusMessage: newMessage});
 	}
 
-	fireMissle = (missleSource, missleTarget, row, col) => {
+	fireMissle = (missleSourceName, missleSource, missleTarget, row, col) => {
 		// missleSource, missleTarget also passed to processMove -- refactor?
 		console.log(row, col);
 
 		setTimeout(function(){
-			this.processMove(missleSource, missleTarget, row,col);
+			this.processMove(missleSourceName, missleSource, missleTarget, row,col);
 		}.bind(this), 1000);
 		// add source and target args later
 		// check target's shipMap for row and col
@@ -43,13 +39,25 @@ class App extends Component {
 
 	compMakeRandomMove = () => {
 		console.log("comp making move");
-		const row = Math.round(Math.random() * 10);
-		const col = Math.round(Math.random() * 10);
-		this.fireMissle(this.compHits, this.playerShips, row, col);
+		const row = Math.round(Math.random() * 9);
+		const col = Math.round(Math.random() * 9);
+		this.fireMissle("comp", this.state.compHits, this.state.playerShips, row, col);
+	}
+
+	decrementShipUnits(missleSourceName){
+		if(missleSourceName === "player"){
+			let shipUnits = this.state.compShipUnits;
+			shipUnits--;
+			this.setState({compShipUnits: shipUnits});
+		} else if (missleSourceName === "comp"){
+			let shipUnits = this.state.playerShipUnits;
+			shipUnits--;
+			this.setState({playerShipUnits: shipUnits});
+		}
 	}
 
 
-	processMove(missleSource, missleTarget, row,col){
+	processMove(missleSourceName, missleSource, missleTarget, row,col){
 	// look at target ships map
 	// update source hits map
 
@@ -62,6 +70,9 @@ class App extends Component {
 
 			let updateMissleSource = missleSource.slice("");
 			updateMissleSource[row][col] = 2;
+
+			this.decrementShipUnits(missleSourceName);
+			
 			this.setState({missleSource: updateMissleSource}, this.changePlayers());
 
 			// this.setState({compShipUnits: this.state.compShipUnits - 1}, this.changePlayers());
@@ -155,6 +166,9 @@ class App extends Component {
 	    		statusMessage={this.state.statusMessage}
 	    		playersTurn={this.state.playersTurn}
 	    		gameInProgress={this.state.gameInProgress}
+
+	    		compShipUnits={this.state.compShipUnits}
+	    		playerShipUnits={this.state.playerShipUnits}
 	    	/>
     	</div>
     );
