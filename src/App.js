@@ -4,19 +4,35 @@ import Game from '././components/Game';
 class App extends Component {
 
 	checkWin = () => {
-		if(this.state.playerShipUnits === 0 || this.state.compShipUnits === 0){
+		if(this.state.playerShipUnits === 0){
 			this.setState({gameInProgress: false});
-		} 
+			this.setState({winner: "Computer"}, this.updateStatusMessage("Computer has won!"));
+
+		} else if (this.state.compShipUnits === 0){
+			this.setState({gameInProgress: false});
+			this.setState({winner: "Player"}, this.updateStatusMessage("Player has won"));
+		}
 	}
 
 	changePlayers = () => {
 	// change the player and check if the computer is playing
 		this.setState({playersTurn: !this.state.playersTurn});
-		this.setState(this.checkCompPlayingAndTriggerCompMove());
+		this.setState(this.checkCompPlayingAndTriggerCompMove(), this.updateStatusMessageWhoIsFiring());
+	}
+
+	updateStatusMessageWhoIsFiring(){
+		if(this.state.gameInProgress){
+			if(this.state.playersTurn){
+				this.updateStatusMessage("Ready for player...")
+			} else {
+				this.updateStatusMessage("Computer firing!!!")
+			}
+		}
+
 	}
 
 	checkCompPlayingAndTriggerCompMove(){
-		if(this.state.playersTurn === false){
+		if(this.state.playersTurn === false && this.state.gameInProgress){
 			this.compMakeRandomMove();
 		}
 	}
@@ -39,6 +55,7 @@ class App extends Component {
 
 	compMakeRandomMove = () => {
 		console.log("comp making move");
+		this.updateStatusMessage("COMPUTER FIRING!");
 		const row = Math.round(Math.random() * 9);
 		const col = Math.round(Math.random() * 9);
 		this.fireMissle("comp", this.state.compHits, this.state.playerShips, row, col);
@@ -110,19 +127,19 @@ class App extends Component {
 			[0,0,0,0,0,0,0,0,0,0],
 			[0,0,0,0,0,0,0,0,0,0],
 		],
-		playerShipUnits: 18,
+		playerShipUnits: 4,
 		playerShips: 
 		[
+			[1,1,1,1,0,0,0,0,0,0],
 			[0,0,0,0,0,0,0,0,0,0],
-			[0,0,1,0,0,1,1,1,0,0],
-			[0,0,1,0,0,0,0,0,0,0],
-			[0,0,1,0,0,0,0,0,0,1],
-			[0,0,1,0,0,0,0,0,0,1],
-			[0,0,1,0,0,0,0,0,0,1],
-			[0,0,0,0,0,0,0,0,0,1],
-			[0,1,1,1,1,0,0,0,0,0],
 			[0,0,0,0,0,0,0,0,0,0],
-			[0,0,0,0,0,0,1,1,0,0],
+			[0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0],
 		],			
 		compHits: 
 		[
@@ -137,20 +154,21 @@ class App extends Component {
 			[0,0,0,0,0,0,0,0,0,0],
 			[0,0,0,0,0,0,0,0,0,0],
 		],		
-		compShipUnits: 18,
+		compShipUnits: 4,
 		compShips: 
 		[
-			[0,0,0,0,0,0,0,0,0,0],
-			[0,0,0,0,1,1,1,0,0,0],
-			[1,0,1,1,0,0,0,0,0,0],
-			[1,0,0,0,0,1,0,0,0,0],
-			[1,0,0,0,0,1,0,0,0,0],
-			[1,0,0,0,0,1,0,0,0,0],
-			[1,0,0,0,0,1,0,0,0,0],
-			[0,1,1,1,1,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,1],
+			[0,0,0,0,0,0,0,0,0,1],
+			[0,0,0,0,0,0,0,0,0,1],
+			[0,0,0,0,0,0,0,0,0,1],
 			[0,0,0,0,0,0,0,0,0,0],
 			[0,0,0,0,0,0,0,0,0,0],
-		],			
+			[0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0],
+		],	
+		winner: null,		
 	}
 
   render() {

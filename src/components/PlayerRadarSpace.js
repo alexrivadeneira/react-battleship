@@ -5,7 +5,7 @@ class PlayerRadarSpace extends Component {
   handleClick = (row, col) => {
     // only allow click on players turn and while game in progress
     if(this.props.playersTurn && this.props.gameInProgress){
-      this.props.updateStatusMessage("FIRING!");
+      this.props.updateStatusMessage("PLAYER FIRING!");
       this.props.fireMissle("player", this.props.playerHits, this.props.compShips, row,col);     
     }
   }
