@@ -6,16 +6,24 @@ import Game from '././components/Game';
 class App extends Component {
 
 	componentDidMount(){
-		console.log(this.state.playerShipsData);
-		const compShipMap = this.newShipMap(this.state.compShipsData);
-		const playerShipMap = this.newShipMap(this.state.playerShipsData);
-		this.setState({
-			playerShips: playerShipMap, 
-			compShips: compShipMap
-		});
+		console.log("starting game");
+		this.refreshRadarMap();
+		console.log(this.state.player.shipsDisplay, this.state.comp.shipsDisplay);
 	}
 
-	startGame(){
+	refreshRadarMap(){
+		// probably don't need to update both comp and player?
+		const compShipMap = this.newShipMap(this.state.comp.shipsData);
+		const playerShipMap = this.newShipMap(this.state.player.shipsData);
+
+		let player = this.state.player;
+		player.shipsDisplay = playerShipMap;
+
+		let comp = this.state.comp;
+		comp.shipsDisplay = compShipMap;
+
+		this.setState({...player, ...comp});
+
 
 	}
 
@@ -57,12 +65,12 @@ class App extends Component {
 		this.setState({statusMessage: newMessage});
 	}
 
-	fireMissle = (missleSourceName, missleSource, missleTarget, row, col) => {
+	fireMissle = (missleSource, missleTarget, row, col) => {
 		// missleSource, missleTarget also passed to processMove -- refactor?
 		console.log(row, col);
 
 		setTimeout(function(){
-			this.processMove(missleSourceName, missleSource, missleTarget, row,col);
+			this.processMove(missleSource, missleTarget, row,col);
 		}.bind(this), 1000);
 		// add source and target args later
 		// check target's shipMap for row and col
@@ -83,12 +91,8 @@ class App extends Component {
 		this.updateStatusMessage("COMPUTER FIRING!");
 		const row = Math.round(Math.random() * 9);
 		const col = Math.round(Math.random() * 9);
-		this.fireMissle("comp", this.state.compHits, this.state.playerShips, row, col);
+		this.fireMissle(this.state.comp.hits, this.state.player.shipData, row, col);
 	}
-
-
-
-
 
 	getNeighbors(row, col){
 		const OFFSETS = {
@@ -114,7 +118,6 @@ class App extends Component {
 		return neighbors;
 	}
 
-
 	decrementShipUnits(missleSourceName){
 		if(missleSourceName === "player"){
 			let shipUnits = this.state.compShipUnits;
@@ -127,13 +130,21 @@ class App extends Component {
 		}
 	}
 
+	hitAShip(missleTarget){
 
-	processMove(missleSourceName, missleSource, missleTarget, row,col){
+	}
+
+
+	processMove(missleSource, missleTarget, row,col){
 	// look at target ships map
 	// update source hits map
 
-		if(missleTarget[row][col] === 1){
+		if(isNaN(missleTarget[row][col])){
+			console.log(">>>>>Got a hit!");
 		// got a hit
+		// destroy piece of the target's ship
+		// refresh the radar
+
 			console.log("hit!");
 			let updateMissleTarget = missleTarget.slice("");
 			updateMissleTarget[row][col] = 8;
@@ -142,7 +153,6 @@ class App extends Component {
 			let updateMissleSource = missleSource.slice("");
 			updateMissleSource[row][col] = 2;
 
-			this.decrementShipUnits(missleSourceName);
 			
 			this.setState({missleSource: updateMissleSource}, this.changePlayers());
 
@@ -188,117 +198,119 @@ class App extends Component {
 
 
 	state = {
-		playerShipsData: {
-			//battleship
-			"B": {
-				functionalUnits: [[0,0], [0,1], [0,2], [0,3]],
-				destroyedUnits: [],
+		player: {
+			shipsData: {
+				//battleship
+				"B": {
+					functionalUnits: [[0,0], [0,1], [0,2], [0,3]],
+					destroyedUnits: [],
+				},
+				//carrier
+				"C": {
+					functionalUnits: [[1,1], [2,1], [3,1], [4,1], [5,1]],
+					destroyedUnits: [],				
+				},
+				//patrol			
+				"P": {
+					functionalUnits: [[1,6],[1,7]],
+					destroyedUnits: [],				
+				},
+				//submarine
+				"S": {
+					functionalUnits: [[6,3],[6,4],[6,5]],
+					destroyedUnits: [],				
+				},
+				//cargo			
+				"CG": {
+					functionalUnits: [[9,5],[9,6],[9,7],[9,8]],
+					destroyedUnits: [],				
+				},									
 			},
-			//carrier
-			"C": {
-				functionalUnits: [[1,1], [2,1], [3,1], [4,1], [5,1]],
-				destroyedUnits: [],				
-			},
-			//patrol			
-			"P": {
-				functionalUnits: [[1,6],[1,7]],
-				destroyedUnits: [],				
-			},
-			//submarine
-			"S": {
-				functionalUnits: [[6,3],[6,4],[6,5]],
-				destroyedUnits: [],				
-			},
-			//cargo			
-			"CG": {
-				functionalUnits: [[9,5],[9,6],[9,7],[9,8]],
-				destroyedUnits: [],				
-			},									
+			hits: 
+				[
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+				],
+			shipsDisplay: 
+				[
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+				],		
 		},
-		compShipsData: {
-			//battleship
-			"B": {
-				functionalUnits: [[0,0], [0,1], [0,2], [0,3]],
-				destroyedUnits: [],
-			},
-			//carrier
-			"C": {
-				functionalUnits: [[1,1], [2,1], [3,1], [4,1], [5,1]],
-				destroyedUnits: [],				
-			},
-			//patrol			
-			"P": {
-				functionalUnits: [[1,6],[1,7]],
-				destroyedUnits: [],				
-			},
-			//submarine
-			"S": {
-				functionalUnits: [[6,3],[6,4],[6,5]],
-				destroyedUnits: [],				
-			},
-			//cargo			
-			"CG": {
-				functionalUnits: [[9,5],[9,6],[9,7],[9,8]],
-				destroyedUnits: [],				
-			},									
-		},		
+		comp: {
+			shipsData: {
+				//battleship
+				"B": {
+					functionalUnits: [[0,0], [0,1], [0,2], [0,3]],
+					destroyedUnits: [],
+				},
+				//carrier
+				"C": {
+					functionalUnits: [[1,2], [2,2], [3,2], [4,2], [5,2]],
+					destroyedUnits: [],				
+				},
+				//patrol			
+				"P": {
+					functionalUnits: [[1,9],[2,9]],
+					destroyedUnits: [],				
+				},
+				//submarine
+				"S": {
+					functionalUnits: [[8,1],[8,2],[8,3]],
+					destroyedUnits: [],				
+				},
+				//cargo			
+				"CG": {
+					functionalUnits: [[9,0],[9,1],[9,2],[9,3]],
+					destroyedUnits: [],				
+				},									
+			},	
+			hits: 
+				[
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+				],
+			shipsDisplay: 
+				[
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+				],					
+		},
 		statusMessage: "Player's Turn",
 		playersTurn: true,
 		gameInProgress: true,
-		playerHits: 
-		[
-			[0,0,0,0,0,0,0,0,0,0],
-			[0,0,0,0,0,0,0,0,0,0],
-			[0,0,0,0,0,0,0,0,0,0],
-			[0,0,0,0,0,0,0,0,0,0],
-			[0,0,0,0,0,0,0,0,0,0],
-			[0,0,0,0,0,0,0,0,0,0],
-			[0,0,0,0,0,0,0,0,0,0],
-			[0,0,0,0,0,0,0,0,0,0],
-			[0,0,0,0,0,0,0,0,0,0],
-			[0,0,0,0,0,0,0,0,0,0],
-		],
-		playerShipUnits: 4,
-		playerShips: 
-		[
-			[0,0,0,0,0,0,0,0,0,0],
-			[0,0,0,0,0,0,0,0,0,0],
-			[0,0,0,0,0,0,0,0,0,0],
-			[0,0,0,0,0,0,0,0,0,0],
-			[0,0,0,0,0,0,0,0,0,0],
-			[0,0,0,0,0,0,0,0,0,0],
-			[0,0,0,0,0,0,0,0,0,0],
-			[0,0,0,0,0,0,0,0,0,0],
-			[0,0,0,0,0,0,0,0,0,0],
-			[0,0,0,0,0,0,0,0,0,0],
-		],			
-		compHits: 
-		[
-			[0,0,0,0,0,0,0,0,0,0],
-			[0,0,0,0,0,0,0,0,0,0],
-			[0,0,0,0,0,0,0,0,0,0],
-			[0,0,0,0,0,0,0,0,0,0],
-			[0,0,0,0,0,0,0,0,0,0],
-			[0,0,0,0,0,0,0,0,0,0],
-			[0,0,0,0,0,0,0,0,0,0],
-			[0,0,0,0,0,0,0,0,0,0],
-			[0,0,0,0,0,0,0,0,0,0],
-			[0,0,0,0,0,0,0,0,0,0],
-		],		
-		compShipUnits: 4,
-		compShips: 
-		[
-			[0,0,0,0,0,0,0,0,0,0],
-			[0,0,0,0,0,0,0,0,0,0],
-			[0,0,0,0,0,0,0,0,0,0],
-			[0,0,0,0,0,0,0,0,0,0],
-			[0,0,0,0,0,0,0,0,0,0],
-			[0,0,0,0,0,0,0,0,0,0],
-			[0,0,0,0,0,0,0,0,0,0],
-			[0,0,0,0,0,0,0,0,0,0],
-			[0,0,0,0,0,0,0,0,0,0],
-			[0,0,0,0,0,0,0,0,0,0],
-		],	
 		winner: null,		
 	}
 
@@ -306,18 +318,16 @@ class App extends Component {
     return (
     	<div>
 	    	<Game
-	    		playerShips={this.state.playerShips}
+	    		playerShips={this.state.player.shipsDisplay}
 	    		fireMissle={this.fireMissle}
-	    		compShips={this.state.compShips}
-	    		playerHits={this.state.playerHits}
+	    		compShips={this.state.comp.shipsDisplay}
+	    		playerHits={this.state.player.hits}
 
 	    		updateStatusMessage={this.updateStatusMessage}
 	    		statusMessage={this.state.statusMessage}
 	    		playersTurn={this.state.playersTurn}
 	    		gameInProgress={this.state.gameInProgress}
 
-	    		compShipUnits={this.state.compShipUnits}
-	    		playerShipUnits={this.state.playerShipUnits}
 	    	/>
     	</div>
     );

@@ -6,7 +6,7 @@ class PlayerRadarSpace extends Component {
     // only allow click on players turn and while game in progress
     if(this.props.playersTurn && this.props.gameInProgress){
       this.props.updateStatusMessage("PLAYER FIRING!");
-      this.props.fireMissle("player", this.props.playerHits, this.props.compShips, row,col);     
+      this.props.fireMissle(this.props.playerHits, this.props.compShips, row,col);     
     }
   }
 
@@ -16,6 +16,11 @@ class PlayerRadarSpace extends Component {
       0: "blue",
       1: "cyan",
       2: "red",
+      "B": "grey",
+      "C": "grey",
+      "CG": "grey",
+      "S": "grey",
+      "P": "grey",
     };
 
     const spaceStyle = {

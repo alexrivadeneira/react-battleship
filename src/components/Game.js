@@ -18,8 +18,6 @@ class Game extends Component {
           statusMessage={this.props.statusMessage} 
           playersTurn={this.props.playersTurn}
           
-          compShipUnits={this.props.compShipUnits}
-          playerShipUnits={this.props.playerShipUnits}          
         />
 
       	<div className="boards" style={boardsStyle}>

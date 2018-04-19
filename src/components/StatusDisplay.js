@@ -17,8 +17,7 @@ class StatusDisplay extends Component {
       	<h2>MessageArea:</h2>
       	<p>Current player: <strong>{showCurrentPlayer}</strong></p>
       	<p><em>{this.props.statusMessage}</em></p>
-        <p>Player ships remaining: {this.props.playerShipUnits}</p>
-        <p>Comp ships remaining: {this.props.compShipUnits}</p>
+
       </div>
     );
   }
