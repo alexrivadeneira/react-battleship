@@ -5,8 +5,19 @@ import Game from '././components/Game';
 
 class App extends Component {
 
+	componentDidMount(){
+		console.log(this.state.playerShipsData);
+		const compShipMap = this.newShipMap(this.state.compShipsData);
+		const playerShipMap = this.newShipMap(this.state.playerShipsData);
+		this.setState({
+			playerShips: playerShipMap, 
+			compShips: compShipMap
+		});
+	}
 
+	startGame(){
 
+	}
 
 	checkWin = () => {
 		if(this.state.playerShipUnits === 0){
@@ -152,8 +163,85 @@ class App extends Component {
 
 	}
 
+	newShipMap(shipData){
+		let map = [
+			[0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0]
+								];
+
+		for(let ship in shipData){
+			for(let functionalUnit in shipData[ship]["functionalUnits"]){
+				map[shipData[ship]["functionalUnits"][functionalUnit][0]][shipData[ship]["functionalUnits"][functionalUnit][1]] = ship;
+			}
+		}
+		return map;
+	}
+
+
 
 	state = {
+		playerShipsData: {
+			//battleship
+			"B": {
+				functionalUnits: [[0,0], [0,1], [0,2], [0,3]],
+				destroyedUnits: [],
+			},
+			//carrier
+			"C": {
+				functionalUnits: [[1,1], [2,1], [3,1], [4,1], [5,1]],
+				destroyedUnits: [],				
+			},
+			//patrol			
+			"P": {
+				functionalUnits: [[1,6],[1,7]],
+				destroyedUnits: [],				
+			},
+			//submarine
+			"S": {
+				functionalUnits: [[6,3],[6,4],[6,5]],
+				destroyedUnits: [],				
+			},
+			//cargo			
+			"CG": {
+				functionalUnits: [[9,5],[9,6],[9,7],[9,8]],
+				destroyedUnits: [],				
+			},									
+		},
+		compShipsData: {
+			//battleship
+			"B": {
+				functionalUnits: [[0,0], [0,1], [0,2], [0,3]],
+				destroyedUnits: [],
+			},
+			//carrier
+			"C": {
+				functionalUnits: [[1,1], [2,1], [3,1], [4,1], [5,1]],
+				destroyedUnits: [],				
+			},
+			//patrol			
+			"P": {
+				functionalUnits: [[1,6],[1,7]],
+				destroyedUnits: [],				
+			},
+			//submarine
+			"S": {
+				functionalUnits: [[6,3],[6,4],[6,5]],
+				destroyedUnits: [],				
+			},
+			//cargo			
+			"CG": {
+				functionalUnits: [[9,5],[9,6],[9,7],[9,8]],
+				destroyedUnits: [],				
+			},									
+		},		
 		statusMessage: "Player's Turn",
 		playersTurn: true,
 		gameInProgress: true,
@@ -173,15 +261,15 @@ class App extends Component {
 		playerShipUnits: 4,
 		playerShips: 
 		[
-			[1,1,1,1,1,1,0,0,0,0],
-			[1,1,1,1,1,1,0,0,0,0],
-			[1,1,1,1,1,1,0,0,0,0],
-			[1,1,1,1,1,1,0,0,0,0],
-			[1,1,1,1,1,1,0,0,0,0],
-			[1,1,1,1,1,1,0,0,0,0],
-			[1,1,1,1,1,1,0,0,0,0],
-			[1,1,1,1,1,1,0,0,0,0],
-			[1,1,1,1,1,1,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0],
 			[0,0,0,0,0,0,0,0,0,0],
 		],			
 		compHits: 
@@ -200,10 +288,10 @@ class App extends Component {
 		compShipUnits: 4,
 		compShips: 
 		[
-			[0,0,0,0,0,0,0,0,0,1],
-			[0,0,0,0,0,0,0,0,0,1],
-			[0,0,0,0,0,0,0,0,0,1],
-			[0,0,0,0,0,0,0,0,0,1],
+			[0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0],
 			[0,0,0,0,0,0,0,0,0,0],
 			[0,0,0,0,0,0,0,0,0,0],
 			[0,0,0,0,0,0,0,0,0,0],
