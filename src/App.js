@@ -1,7 +1,12 @@
 import React, { Component } from 'react';
 import Game from '././components/Game';
 
+
+
 class App extends Component {
+
+
+
 
 	checkWin = () => {
 		if(this.state.playerShipUnits === 0){
@@ -69,6 +74,35 @@ class App extends Component {
 		const col = Math.round(Math.random() * 9);
 		this.fireMissle("comp", this.state.compHits, this.state.playerShips, row, col);
 	}
+
+
+
+
+
+	getNeighbors(row, col){
+		const OFFSETS = {
+			"left": [0, -1],
+			"right": [0, 1],
+			"up": [-1, 0],
+			"down": [1, 0],
+		};
+
+		let possibleNeighbors = [];
+
+		for(let direction in OFFSETS){
+			possibleNeighbors.push([row + OFFSETS[direction][0], col + OFFSETS[direction][1]]);
+		}
+
+		const neighbors = possibleNeighbors.filter(neighbor => 
+			neighbor[0] >= 0 && 
+			neighbor[0] < 10 && 
+			neighbor[1] >= 0 &&
+			neighbor[1] < 10
+		);
+
+		return neighbors;
+	}
+
 
 	decrementShipUnits(missleSourceName){
 		if(missleSourceName === "player"){
@@ -201,5 +235,7 @@ class App extends Component {
     );
   }
 }
+
+
 
 export default App;
