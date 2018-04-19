@@ -54,6 +54,15 @@ class App extends Component {
 	}
 
 	compMakeRandomMove = () => {
+
+		// improve this algorithm:
+
+		// computer will make random selection until it finds a hit
+
+		// performs depth first search once tracking a ship to find all connections and sink the ship
+
+		// when it sinks a ship, starts randomly searching again
+
 		console.log("comp making move");
 		this.updateStatusMessage("COMPUTER FIRING!");
 		const row = Math.round(Math.random() * 9);
