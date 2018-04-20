@@ -31,7 +31,6 @@ class PlayerRadar extends Component {
           gameInProgress={this.props.gameInProgress}
 
           playerHits={this.props.playerHits}
-          compShips={this.props.compShips}
   				/>
   			);
   			index++;

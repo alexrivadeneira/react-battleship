@@ -128,6 +128,8 @@ class App extends Component {
 	}
 
 
+
+
 	hitAShip(shipCode, missleTarget, row, col){
 		console.log("HIT A SHIP");
 		this.updateStatusMessage("Hit!");
@@ -189,6 +191,20 @@ class App extends Component {
 		return true;
 	}
 
+	updateHitsMap(player, hit, row, col){
+		let currPlayer = this.state[player];
+		let currMap = this.state[player].hits;
+		
+		if(hit){
+			currMap[row][col] = 2;
+		} else {
+			currMap[row][col] = 1;
+		}
+
+		currPlayer.hits = currMap;
+		this.setState({player: currPlayer});
+	}
+
 	processMove(missleSource,row,col){
 
 		const missleTarget = missleSource === "player" ? "comp" : "player";
@@ -206,8 +222,11 @@ class App extends Component {
 			stuffInTargetSpace === "S"){
 
 			this.hitAShip(stuffInTargetSpace, missleTarget, row, col);
+			this.updateHitsMap(missleSource, true, row, col);
 		} else {
-			console.log("MISS");
+			this.updateStatusMessage("Miss!");
+			this.updateHitsMap(missleSource, false, row, col);
+
 		}
 		
 
@@ -365,9 +384,9 @@ class App extends Component {
     return (
     	<div>
 	    	<Game
-	    		playerShips={this.state.player.shipsDisplay}
 	    		fireMissle={this.fireMissle}
-	    		compShips={this.state.comp.shipsDisplay}
+
+	    		playerShips={this.state.player.shipsDisplay}
 	    		playerHits={this.state.player.hits}
 
 	    		compRemainingShips={this.state.comp.remainingShips}
