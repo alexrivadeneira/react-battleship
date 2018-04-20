@@ -27,11 +27,11 @@ class App extends Component {
 	}
 
 	checkWin = () => {
-		if(this.state.playerShipUnits === 0){
+		if(this.state.player.remainingShips === 0){
 			this.setState({gameInProgress: false});
 			this.setState({winner: "Computer"}, this.updateStatusMessage("Computer has won!"));
 
-		} else if (this.state.compShipUnits === 0){
+		} else if (this.state.comp.remainingShips === 0){
 			this.setState({gameInProgress: false});
 			this.setState({winner: "Player"}, this.updateStatusMessage("Player has won"));
 		}
@@ -125,15 +125,6 @@ class App extends Component {
 
 		currPlayer.remainingShips = shipsNum;
 		this.setState({playerName: currPlayer});
-		// if(playerName === "player"){
-		// 	let shipsNum = this.state.player.remainingShips;
-		// 	shipsNum--;
-		// 	this.setState({player.remainingShips: shipsNum});
-		// } else {
-		// 	let shipsNum = this.state.comp.remainingShips;
-		// 	shipsNum--;
-		// 	this.setState({comp.remainingShips: shipsNum});
-		// }	
 	}
 
 
@@ -169,6 +160,7 @@ class App extends Component {
 			"P": "Patrol"
 		};
 
+		// should ship decrementing go here?
 		if(functionalUnitsUpdate.length === 0){
 			const message = BOATCODE_NAME[shipCode] + " sunk!";
 			this.updateStatusMessage(message);
