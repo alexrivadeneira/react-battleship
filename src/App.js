@@ -223,12 +223,13 @@ class App extends Component {
 
 			this.hitAShip(stuffInTargetSpace, missleTarget, row, col);
 			this.updateHitsMap(missleSource, true, row, col);
+		} else if (stuffInTargetSpace === "X"){
+			this.updateStatusMessage("Already hit!");
 		} else {
-			this.updateStatusMessage("Miss!");
 			this.updateHitsMap(missleSource, false, row, col);
+			this.updateStatusMessage("Miss!");
 
 		}
-		
 
 
 		// this.setState(this.changePlayers());
@@ -256,6 +257,19 @@ class App extends Component {
 				map[shipData[ship]["functionalUnits"][functionalUnit][0]][shipData[ship]["functionalUnits"][functionalUnit][1]] = ship;
 			}
 		}
+
+		// add X to mark anywhere a ship has been hit
+
+		for(let ship in shipData){
+
+			for(let destroyedUnit in shipData[ship]["destroyedUnits"]){
+				console.log("adding destroyed ship");
+				map[shipData[ship]["destroyedUnits"][destroyedUnit][0]][shipData[ship]["destroyedUnits"][destroyedUnit][1]] = "X";
+			}
+		}		
+
+					console.log("updatedmap: ", map);
+
 		return map;
 	}
 
