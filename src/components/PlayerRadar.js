@@ -10,6 +10,7 @@ class PlayerRadar extends Component {
     };
 
     const mapStyle = {
+      display: "inline-block",
       padding: "15px",
       border: "2px solid black",
     }    
