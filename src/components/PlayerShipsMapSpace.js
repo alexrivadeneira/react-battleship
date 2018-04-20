@@ -7,6 +7,11 @@ class PlayerShipsMapSpace extends Component {
     const colorKey = {
       0: "blue",
       1: "grey",
+      "B": "grey",
+      "C": "grey",
+      "CG": "grey",
+      "S": "grey",
+      "P": "grey",
       8: "red",
     };
 

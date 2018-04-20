@@ -15,7 +15,8 @@ class PlayerShipsMap extends Component {
   	for(var row = 0; row < this.props.playerShips.length; row++){
   		for(var col = 0; col < this.props.playerShips[row].length; col++){
   			spaces.push(
-  				<PlayerShipsMapSpace fill={this.props.playerShips[row][col]}
+  				<PlayerShipsMapSpace 
+          fill={this.props.playerShips[row][col]}
   				row={row}
   				col={col}
   				key={index}

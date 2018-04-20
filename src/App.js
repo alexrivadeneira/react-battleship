@@ -8,7 +8,7 @@ class App extends Component {
 	componentDidMount(){
 		console.log("starting game");
 		this.refreshRadarMap();
-		console.log(this.state.player.shipsDisplay, this.state.comp.shipsDisplay);
+		console.log(this.state.comp.shipsDisplay);
 	}
 
 	refreshRadarMap(){
@@ -23,7 +23,6 @@ class App extends Component {
 		comp.shipsDisplay = compShipMap;
 
 		this.setState({...player, ...comp});
-
 
 	}
 
@@ -65,12 +64,12 @@ class App extends Component {
 		this.setState({statusMessage: newMessage});
 	}
 
-	fireMissle = (missleSource, missleTarget, row, col) => {
+	fireMissle = (missleSource, row, col) => {
 		// missleSource, missleTarget also passed to processMove -- refactor?
 		console.log(row, col);
 
 		setTimeout(function(){
-			this.processMove(missleSource, missleTarget, row,col);
+			this.processMove(missleSource, row,col);
 		}.bind(this), 1000);
 		// add source and target args later
 		// check target's shipMap for row and col
@@ -130,46 +129,90 @@ class App extends Component {
 		}
 	}
 
-	hitAShip(missleTarget){
+	hitAShip(shipCode, missleTarget, row, col){
+		console.log("HIT A SHIP");
+	// marks unit of ship as being destroyed		
+	// logs if the ship has been totally destroyed to the status display
+	// checks if all the ships were destroyed to check for win
 
+		let currentShipDataOnTarget = this.state[missleTarget].shipsData[shipCode];
+
+		let functionalUnitsUpdate = currentShipDataOnTarget.functionalUnits;
+		const destroyedUnits = currentShipDataOnTarget.destroyedUnits;
+
+		let idxToRemove;
+
+		for(let i = 0; i < functionalUnitsUpdate.length; i++){
+			console.log("got here");
+			if(this.checkEqualArrays(functionalUnitsUpdate[i], [row, col])){
+				idxToRemove = i;
+			}
+		}
+
+		functionalUnitsUpdate.splice(idxToRemove, 1);
+
+		const BOATCODE_NAME = {
+			"B": "Battleship",
+			"C": "Carrier",
+			"S": "Submarine",
+			"CG": "Cargo",
+			"P": "Patrol"
+		};
+
+		if(functionalUnitsUpdate.length === 0){
+			const message = BOATCODE_NAME[shipCode] + " sunk!";
+			this.updateStatusMessage(message);
+		}
+
+
+
+		const updatedDestroyedUnits = [...destroyedUnits, [row, col]];
+
+		console.log(functionalUnitsUpdate, updatedDestroyedUnits);
+
+		currentShipDataOnTarget.functionalUnits = functionalUnitsUpdate;
+		currentShipDataOnTarget.destroyedUnits = updatedDestroyedUnits;
+
+		this.setState({currentShipDataOnTarget})
 	}
 
+	checkEqualArrays(arr1, arr2){
+		if(arr1.length !== arr2.length){
+			return false;
+		}
+		for(let i = 0; i < arr1.length; i++){
+			if(arr1[i] !== arr2[i]){
+				return false;
+			}
+		}
+		return true;
+	}
 
-	processMove(missleSource, missleTarget, row,col){
-	// look at target ships map
-	// update source hits map
+	processMove(missleSource,row,col){
 
-		if(isNaN(missleTarget[row][col])){
-			console.log(">>>>>Got a hit!");
-		// got a hit
-		// destroy piece of the target's ship
-		// refresh the radar
+		const missleTarget = missleSource === "player" ? "comp" : "player";
+	
+		// if you get a hit, update the ship data
+		// update and refresh the display map
+		// change players
 
-			console.log("hit!");
-			let updateMissleTarget = missleTarget.slice("");
-			updateMissleTarget[row][col] = 8;
-			this.setState({missleTarget: updateMissleTarget});
+		const stuffInTargetSpace = this.state[missleTarget].shipsDisplay[row][col];
 
-			let updateMissleSource = missleSource.slice("");
-			updateMissleSource[row][col] = 2;
+		if(stuffInTargetSpace === "C" ||
+			stuffInTargetSpace === "P" ||
+			stuffInTargetSpace === "CG" ||
+			stuffInTargetSpace === "B" ||
+			stuffInTargetSpace === "S"){
+			this.hitAShip(stuffInTargetSpace, missleTarget, row, col);
+		} else {
+			console.log("MISS");
+		}
+		
 
-			
-			this.setState({missleSource: updateMissleSource}, this.changePlayers());
 
-			// this.setState({compShipUnits: this.state.compShipUnits - 1}, this.changePlayers());
+		// this.setState(this.changePlayers());
 
-		// miss
-		} else if (missleTarget[row][col] === 0){
-			console.log("miss!");
-			let updateMissleSource = missleSource.slice("");
-			updateMissleSource[row][col] = 1;
-			this.setState({missleSource: updateMissleSource}, this.changePlayers());
 
-		// already went here - miss!
-		} else if (missleTarget[row][col] === 8){
-			console.log("miss");
-			this.setState(this.changePlayers());
-		}	
 
 	}
 
@@ -199,6 +242,7 @@ class App extends Component {
 
 	state = {
 		player: {
+			remainingShips: 5,
 			shipsData: {
 				//battleship
 				"B": {
@@ -254,6 +298,7 @@ class App extends Component {
 				],		
 		},
 		comp: {
+			remainingShips: 5,			
 			shipsData: {
 				//battleship
 				"B": {
