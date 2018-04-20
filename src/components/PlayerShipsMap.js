@@ -5,8 +5,8 @@ class PlayerShipsMap extends Component {
   render() {
     const boardStyle = {
       width: "270px",
-      display: "inline-block",
-      marginRight: "10px",
+      display: "grid",
+      gridTemplateColumns: "27px 27px 27px 27px 27px 27px 27px 27px 27px 27px",
     };
 
   	let spaces = [];

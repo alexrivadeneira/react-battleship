@@ -3,10 +3,11 @@ import PlayerRadarSpace from './PlayerRadarSpace';
 
 class PlayerRadar extends Component {
   render() {
-  	const boardStyle = {
-  		width: "270px",
-  		display: "inline-block",
-  	};
+    const boardStyle = {
+      width: "270px",
+      display: "grid",
+      gridTemplateColumns: "27px 27px 27px 27px 27px 27px 27px 27px 27px 27px",
+    };
 
   	let spaces = [];
   	let index = 0;
