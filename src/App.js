@@ -117,20 +117,11 @@ class App extends Component {
 		return neighbors;
 	}
 
-	decrementShipUnits(missleSourceName){
-		if(missleSourceName === "player"){
-			let shipUnits = this.state.compShipUnits;
-			shipUnits--;
-			this.setState({compShipUnits: shipUnits});
-		} else if (missleSourceName === "comp"){
-			let shipUnits = this.state.playerShipUnits;
-			shipUnits--;
-			this.setState({playerShipUnits: shipUnits});
-		}
-	}
 
 	hitAShip(shipCode, missleTarget, row, col){
 		console.log("HIT A SHIP");
+		this.updateStatusMessage("Hit!");
+
 	// marks unit of ship as being destroyed		
 	// logs if the ship has been totally destroyed to the status display
 	// checks if all the ships were destroyed to check for win
@@ -164,8 +155,6 @@ class App extends Component {
 			this.updateStatusMessage(message);
 		}
 
-
-
 		const updatedDestroyedUnits = [...destroyedUnits, [row, col]];
 
 		console.log(functionalUnitsUpdate, updatedDestroyedUnits);
@@ -173,7 +162,7 @@ class App extends Component {
 		currentShipDataOnTarget.functionalUnits = functionalUnitsUpdate;
 		currentShipDataOnTarget.destroyedUnits = updatedDestroyedUnits;
 
-		this.setState({currentShipDataOnTarget})
+		this.setState({currentShipDataOnTarget}, this.refreshRadarMap());
 	}
 
 	checkEqualArrays(arr1, arr2){
@@ -203,6 +192,7 @@ class App extends Component {
 			stuffInTargetSpace === "CG" ||
 			stuffInTargetSpace === "B" ||
 			stuffInTargetSpace === "S"){
+
 			this.hitAShip(stuffInTargetSpace, missleTarget, row, col);
 		} else {
 			console.log("MISS");
