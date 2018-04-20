@@ -9,6 +9,11 @@ class PlayerRadar extends Component {
       gridTemplateColumns: "27px 27px 27px 27px 27px 27px 27px 27px 27px 27px",
     };
 
+    const mapStyle = {
+      padding: "15px",
+      border: "2px solid black",
+    }    
+
   	let spaces = [];
   	let index = 0;
 
@@ -34,10 +39,12 @@ class PlayerRadar extends Component {
 
 
     return (
-    	<div style={boardStyle}>
-    	    <h3>Radar</h3>
-    		{spaces}
-    	</div>
+      <div style={mapStyle}>
+        <h3>Radar</h3>
+      	<div style={boardStyle}>
+      		{spaces}
+      	</div>
+      </div>
     );
   }
 }
