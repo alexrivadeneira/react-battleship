@@ -117,6 +117,25 @@ class App extends Component {
 		return neighbors;
 	}
 
+	decrementRemainingShips(playerName){
+		let currPlayer = this.state[playerName];
+		console.log(currPlayer);
+		let shipsNum = this.state[playerName].remainingShips;
+		shipsNum--;
+
+		currPlayer.remainingShips = shipsNum;
+		this.setState({playerName: currPlayer});
+		// if(playerName === "player"){
+		// 	let shipsNum = this.state.player.remainingShips;
+		// 	shipsNum--;
+		// 	this.setState({player.remainingShips: shipsNum});
+		// } else {
+		// 	let shipsNum = this.state.comp.remainingShips;
+		// 	shipsNum--;
+		// 	this.setState({comp.remainingShips: shipsNum});
+		// }	
+	}
+
 
 	hitAShip(shipCode, missleTarget, row, col){
 		console.log("HIT A SHIP");
@@ -153,6 +172,7 @@ class App extends Component {
 		if(functionalUnitsUpdate.length === 0){
 			const message = BOATCODE_NAME[shipCode] + " sunk!";
 			this.updateStatusMessage(message);
+			this.decrementRemainingShips(missleTarget);
 		}
 
 		const updatedDestroyedUnits = [...destroyedUnits, [row, col]];
@@ -357,6 +377,9 @@ class App extends Component {
 	    		fireMissle={this.fireMissle}
 	    		compShips={this.state.comp.shipsDisplay}
 	    		playerHits={this.state.player.hits}
+
+	    		compRemainingShips={this.state.comp.remainingShips}
+	    		playerRemainingShips={this.state.player.remainingShips}
 
 	    		updateStatusMessage={this.updateStatusMessage}
 	    		statusMessage={this.state.statusMessage}

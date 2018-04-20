@@ -17,7 +17,9 @@ class Game extends Component {
         <StatusDisplay
           statusMessage={this.props.statusMessage} 
           playersTurn={this.props.playersTurn}
-          
+          playerRemainingShips={this.props.playerRemainingShips}
+          compRemainingShips={this.props.compRemainingShips}
+
         />
 
       	<div className="boards" style={boardsStyle}>
