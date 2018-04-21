@@ -27,7 +27,7 @@ class Game extends Component {
   	      	playerShips={this.props.playerShips}
   	      />  
   	      <PlayerRadar
-  	      	compShips={this.props.compShips}
+            playerShips={this.props.playerShip}
   	      	playerHits={this.props.playerHits}
   	      	fireMissle={this.props.fireMissle}
 

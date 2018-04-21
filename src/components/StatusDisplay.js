@@ -10,7 +10,6 @@ class StatusDisplay extends Component {
   	};
 
   	const showCurrentPlayer = this.props.playersTurn ? <span>Human</span> : <span>Computer</span>;
-    	console.log("playersTurn: ", this.props.playersTurn);
 
     return (
       <div style={displayStyle}>

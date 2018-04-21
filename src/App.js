@@ -6,9 +6,7 @@ import Game from '././components/Game';
 class App extends Component {
 
 	componentDidMount(){
-		console.log("starting game");
 		this.refreshRadarMap();
-		console.log(this.state.comp.shipsDisplay);
 	}
 
 	refreshRadarMap(){
@@ -23,7 +21,6 @@ class App extends Component {
 		comp.shipsDisplay = compShipMap;
 
 		this.setState({...player, ...comp});
-
 	}
 
 	checkWin = () => {
@@ -38,7 +35,6 @@ class App extends Component {
 	}
 
 	changePlayers = () => {
-	// change the player and check if the computer is playing
 		this.setState({playersTurn: !this.state.playersTurn});
 		this.setState(this.checkCompPlayingAndTriggerCompMove(), this.updateStatusMessageWhoIsFiring());
 	}
@@ -51,7 +47,6 @@ class App extends Component {
 				this.updateStatusMessage("Computer firing!!!")
 			}
 		}
-
 	}
 
 	checkCompPlayingAndTriggerCompMove(){
@@ -65,32 +60,16 @@ class App extends Component {
 	}
 
 	fireMissle = (missleSource, row, col) => {
-		// missleSource, missleTarget also passed to processMove -- refactor?
-		console.log(row, col);
-
 		setTimeout(function(){
-			this.processMove(missleSource, row,col);
+			this.processMove(missleSource, row, col);
 		}.bind(this), 1000);
-		// add source and target args later
-		// check target's shipMap for row and col
-		this.checkWin();
 	}
 
 	compMakeRandomMove = () => {
-
-		// improve this algorithm:
-
-		// computer will make random selection until it finds a hit
-
-		// performs depth first search once tracking a ship to find all connections and sink the ship
-
-		// when it sinks a ship, starts randomly searching again
-
-		console.log("comp making move");
 		this.updateStatusMessage("COMPUTER FIRING!");
 		const row = Math.round(Math.random() * 9);
 		const col = Math.round(Math.random() * 9);
-		this.fireMissle(this.state.comp.hits, this.state.player.shipData, row, col);
+		this.fireMissle("comp", row, col);
 	}
 
 	getNeighbors(row, col){
@@ -117,9 +96,8 @@ class App extends Component {
 		return neighbors;
 	}
 
-	decrementRemainingShips(playerName){
+	decrementRemainingShips = (playerName) => {
 		let currPlayer = this.state[playerName];
-		console.log(currPlayer);
 		let shipsNum = this.state[playerName].remainingShips;
 		shipsNum--;
 
@@ -128,15 +106,8 @@ class App extends Component {
 	}
 
 
-
-
-	hitAShip(shipCode, missleTarget, row, col){
-		console.log("HIT A SHIP");
+	hitAShip = (shipCode, missleTarget, row, col) => {
 		this.updateStatusMessage("Hit!");
-
-	// marks unit of ship as being destroyed		
-	// logs if the ship has been totally destroyed to the status display
-	// checks if all the ships were destroyed to check for win
 
 		let currentShipDataOnTarget = this.state[missleTarget].shipsData[shipCode];
 
@@ -146,7 +117,6 @@ class App extends Component {
 		let idxToRemove;
 
 		for(let i = 0; i < functionalUnitsUpdate.length; i++){
-			console.log("got here");
 			if(this.checkEqualArrays(functionalUnitsUpdate[i], [row, col])){
 				idxToRemove = i;
 			}
@@ -162,7 +132,6 @@ class App extends Component {
 			"P": "Patrol"
 		};
 
-		// should ship decrementing go here?
 		if(functionalUnitsUpdate.length === 0){
 			const message = BOATCODE_NAME[shipCode] + " sunk!";
 			this.updateStatusMessage(message);
@@ -171,15 +140,13 @@ class App extends Component {
 
 		const updatedDestroyedUnits = [...destroyedUnits, [row, col]];
 
-		console.log(functionalUnitsUpdate, updatedDestroyedUnits);
-
 		currentShipDataOnTarget.functionalUnits = functionalUnitsUpdate;
 		currentShipDataOnTarget.destroyedUnits = updatedDestroyedUnits;
 
-		this.setState({currentShipDataOnTarget}, this.refreshRadarMap());
+		this.setState({currentShipDataOnTarget});
 	}
 
-	checkEqualArrays(arr1, arr2){
+	checkEqualArrays = (arr1, arr2) => {
 		if(arr1.length !== arr2.length){
 			return false;
 		}
@@ -191,7 +158,7 @@ class App extends Component {
 		return true;
 	}
 
-	updateHitsMap(player, hit, row, col){
+	updateHitsMap = (player, hit, row, col) => {
 		let currPlayer = this.state[player];
 		let currMap = this.state[player].hits;
 		
@@ -202,17 +169,12 @@ class App extends Component {
 		}
 
 		currPlayer.hits = currMap;
-		this.setState({player: currPlayer});
+		this.setState({[player]: currPlayer});
 	}
 
-	processMove(missleSource,row,col){
+	processMove = (missleSource,row,col) => {
 
 		const missleTarget = missleSource === "player" ? "comp" : "player";
-	
-		// if you get a hit, update the ship data
-		// update and refresh the display map
-		// change players
-
 		const stuffInTargetSpace = this.state[missleTarget].shipsDisplay[row][col];
 
 		if(stuffInTargetSpace === "C" ||
@@ -228,17 +190,12 @@ class App extends Component {
 		} else {
 			this.updateHitsMap(missleSource, false, row, col);
 			this.updateStatusMessage("Miss!");
-
 		}
 
-
-		// this.setState(this.changePlayers());
-
-
-
+		this.setState(this.checkWin(), this.refreshRadarMap(), this.changePlayers());
 	}
 
-	newShipMap(shipData){
+	newShipMap = (shipData) => {
 		let map = [
 			[0,0,0,0,0,0,0,0,0,0],
 			[0,0,0,0,0,0,0,0,0,0],
@@ -258,21 +215,13 @@ class App extends Component {
 			}
 		}
 
-		// add X to mark anywhere a ship has been hit
-
 		for(let ship in shipData){
-
 			for(let destroyedUnit in shipData[ship]["destroyedUnits"]){
-				console.log("adding destroyed ship");
 				map[shipData[ship]["destroyedUnits"][destroyedUnit][0]][shipData[ship]["destroyedUnits"][destroyedUnit][1]] = "X";
 			}
 		}		
-
-					console.log("updatedmap: ", map);
-
 		return map;
 	}
-
 
 
 	state = {
@@ -281,27 +230,27 @@ class App extends Component {
 			shipsData: {
 				//battleship
 				"B": {
-					functionalUnits: [[0,0], [0,1], [0,2], [0,3]],
+					functionalUnits: [[0,9],[1,9],[2,9],[3,9]],
 					destroyedUnits: [],
 				},
 				//carrier
 				"C": {
-					functionalUnits: [[1,1], [2,1], [3,1], [4,1], [5,1]],
+					functionalUnits: [[0,8],[1,8],[2,8],[3,8],[4,8]],
 					destroyedUnits: [],				
 				},
 				//patrol			
 				"P": {
-					functionalUnits: [[1,6],[1,7]],
+					functionalUnits: [[5,8],[6,8]],
 					destroyedUnits: [],				
 				},
 				//submarine
 				"S": {
-					functionalUnits: [[6,3],[6,4],[6,5]],
+					functionalUnits: [[0,6],[1,6],[2,6]],
 					destroyedUnits: [],				
 				},
 				//cargo			
 				"CG": {
-					functionalUnits: [[9,5],[9,6],[9,7],[9,8]],
+					functionalUnits: [[5,0],[5,1],[5,2],[5,3]],
 					destroyedUnits: [],				
 				},									
 			},
