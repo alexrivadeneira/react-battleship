@@ -40,7 +40,7 @@ class PlayerRadar extends Component {
 
     return (
       <div style={mapStyle}>
-        <h3>Radar</h3>
+        <h3>Enemy Radar</h3>
       	<div style={boardStyle}>
       		{spaces}
       	</div>

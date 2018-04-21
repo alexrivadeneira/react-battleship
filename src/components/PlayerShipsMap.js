@@ -36,7 +36,7 @@ class PlayerShipsMap extends Component {
 
     return (
       <div style={mapStyle}>
-        <h3>Ships</h3>
+        <h3>My Ships</h3>
       	<div style={boardStyle}>
       		{spaces}
       	</div>

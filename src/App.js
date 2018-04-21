@@ -10,7 +10,6 @@ class App extends Component {
 	}
 
 	refreshRadarMap(){
-		// probably don't need to update both comp and player?
 		const compShipMap = this.newShipMap(this.state.comp.shipsData);
 		const playerShipMap = this.newShipMap(this.state.player.shipsData);
 
@@ -192,7 +191,11 @@ class App extends Component {
 			this.updateStatusMessage("Miss!");
 		}
 
-		this.setState(this.checkWin(), this.refreshRadarMap(), this.changePlayers());
+		this.setState(
+			this.checkWin(), 
+			this.refreshRadarMap(), 
+			this.changePlayers()
+		);
 	}
 
 	newShipMap = (shipData) => {
