@@ -155,8 +155,11 @@ class App extends Component {
 			// need to refactor:
 			// basically, if it's the computer, then you need to clear out inFocus list because you already blew up the ship
 			if(missleTarget === "player"){
+				console.log("blew up the ship, can clear out");
 				let compUpdate = this.state.comp;
-				compUpdate.targetInFocus = [];
+				let targetInFocusUpdate = this.state.comp.targetInFoucs;
+				targetInFocusUpdate = [];
+				compUpdate.targetInFocus = targetInFocusUpdate;
 				this.setState({comp: compUpdate});
 			}
 		}
