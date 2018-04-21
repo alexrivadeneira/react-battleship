@@ -6,13 +6,17 @@ class PlayerShipsMap extends Component {
     const boardStyle = {
       width: "270px",
       display: "grid",
-      gridTemplateColumns: "27px 27px 27px 27px 27px 27px 27px 27px 27px 27px",
+      transform: "rotateX(50deg)",
+
+      gridTemplateColumns: "27px 27px 27px 27px 27px 27px 27px 27px 27px 27px",   
     };
 
     const mapStyle = {
       display: "inline-block",
       padding: "15px",
-      border: "2px solid black",
+      border: "2px solid black",     
+      perspective: "1000px",
+
     }    
 
 

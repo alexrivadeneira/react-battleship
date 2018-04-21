@@ -9,14 +9,35 @@ class StatusDisplay extends Component {
   		padding: "5px",
   	};
 
+    const playerScore = {
+      float: "left",
+      fontSize: "30px",
+    };
+
+    const compScore = {
+      float: "right",
+      fontSize: "30px",
+    };
+
+    const messageArea = {
+      clear: "both",
+      textAlign: "center",
+      fontSize: "25px",
+    }
+
   	const showCurrentPlayer = this.props.playersTurn ? <span>Human</span> : <span>Computer</span>;
 
     return (
       <div style={displayStyle}>
-        <p>Comp Ships: {this.props.compRemainingShips} Player Ships: {this.props.playerRemainingShips}</p>
-      	<p>Current player: <strong>{showCurrentPlayer}</strong></p>
-      	<p><em>{this.props.statusMessage}</em></p>
-
+        <div style={compScore}>
+          {this.props.compRemainingShips}
+        </div>
+        <div style={playerScore}>
+          {this.props.playerRemainingShips}
+        </div>
+        <div style={messageArea}>
+      	 {this.props.statusMessage}
+         </div>
       </div>
     );
   }

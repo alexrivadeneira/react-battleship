@@ -347,8 +347,15 @@ class App extends Component {
 	}
 
   render() {
+
+	const globalStyle = {
+		background: "#000",
+		color: "red",
+		fontFamily: "Times",
+	}
+
     return (
-    	<div>
+    	<div style={globalStyle}>
 	    	<Game
 	    		fireMissle={this.fireMissle}
 
