@@ -16,6 +16,7 @@ class PlayerRadarSpace extends Component {
       0: "blue",
       1: "cyan",
       2: "red",
+      "M": "cyan",
       "B": "grey",
       "C": "grey",
       "CG": "grey",

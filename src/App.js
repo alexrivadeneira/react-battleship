@@ -7,11 +7,12 @@ class App extends Component {
 
 	componentDidMount(){
 		this.refreshRadarMap();
+		document.body.style.backgroundColor = "#000";
 	}
 
 	refreshRadarMap(){
-		const compShipMap = this.newShipMap(this.state.comp.shipsData);
-		const playerShipMap = this.newShipMap(this.state.player.shipsData);
+		const compShipMap = this.newShipMap(this.state.comp.shipsData, this.state.comp.shipsDisplay);
+		const playerShipMap = this.newShipMap(this.state.player.shipsData, this.state.player.shipsDisplay);
 
 		let player = this.state.player;
 		player.shipsDisplay = playerShipMap;
@@ -66,8 +67,10 @@ class App extends Component {
 
 	compMakeRandomMove = () => {
 		this.updateStatusMessage("COMPUTER FIRING!");
+
 		const row = Math.round(Math.random() * 9);
 		const col = Math.round(Math.random() * 9);
+		console.log("comp move: ", row, col);
 		this.fireMissle("comp", row, col);
 	}
 
@@ -158,17 +161,37 @@ class App extends Component {
 	}
 
 	updateHitsMap = (player, hit, row, col) => {
+
+		const opponent = player === "player" ? "comp" : "player";
+		console.log(player, opponent);
+
 		let currPlayer = this.state[player];
+		let opponentPlayer = this.state[opponent];
+
+		console.log("OP:::", opponentPlayer);
+
 		let currMap = this.state[player].hits;
+		let opponentDisplayMap = this.state[opponent].shipsDisplay;
+
 		
 		if(hit){
 			currMap[row][col] = 2;
 		} else {
+			console.log("marking a miss");
 			currMap[row][col] = 1;
+			// also, add the miss to the opposite player's display
+			opponentDisplayMap[row][col] = "M";
+			console.log("ODM ", opponentDisplayMap);
 		}
 
 		currPlayer.hits = currMap;
-		this.setState({[player]: currPlayer});
+		opponentPlayer.shipsDisplay = opponentDisplayMap;
+
+		this.setState({
+			[player]: currPlayer});
+		this.setState({
+			[opponent]: opponentPlayer
+		});
 	}
 
 	processMove = (missleSource,row,col) => {
@@ -198,19 +221,8 @@ class App extends Component {
 		);
 	}
 
-	newShipMap = (shipData) => {
-		let map = [
-			[0,0,0,0,0,0,0,0,0,0],
-			[0,0,0,0,0,0,0,0,0,0],
-			[0,0,0,0,0,0,0,0,0,0],
-			[0,0,0,0,0,0,0,0,0,0],
-			[0,0,0,0,0,0,0,0,0,0],
-			[0,0,0,0,0,0,0,0,0,0],
-			[0,0,0,0,0,0,0,0,0,0],
-			[0,0,0,0,0,0,0,0,0,0],
-			[0,0,0,0,0,0,0,0,0,0],
-			[0,0,0,0,0,0,0,0,0,0]
-								];
+	newShipMap = (shipData, shipsDisplay) => {
+		let map = shipsDisplay;
 
 		for(let ship in shipData){
 			for(let functionalUnit in shipData[ship]["functionalUnits"]){
