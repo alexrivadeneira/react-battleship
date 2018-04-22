@@ -120,7 +120,6 @@ class App extends Component {
 		this.setState({playerName: currPlayer});
 	}
 
-
 	hitAShip = (shipCode, missleTarget, row, col) => {
 		this.updateStatusMessage("Hit!");
 
@@ -191,8 +190,6 @@ class App extends Component {
 
 		let currPlayer = this.state[player];
 		let opponentPlayer = this.state[opponent];
-
-		console.log("OP:::", opponentPlayer);
 
 		let currMap = this.state[player].hits;
 		let opponentDisplayMap = this.state[opponent].shipsDisplay;
@@ -352,6 +349,7 @@ class App extends Component {
 				[false,false,false,false,false,false,false,false,false,false],
 				[false,false,false,false,false,false,false,false,false,false],
 				],
+			hitsInFocus: [],
 			targetInFocus: [],
 			remainingShips: 5,			
 			shipsData: {
