@@ -12,7 +12,8 @@ class Game extends Component {
   		marginTop: "30px",
   	};
     return (
-      <div className="game">
+      <div className="game"> 
+        <h3>Game</h3> 
 
         <StatusDisplay
           statusMessage={this.props.statusMessage} 
