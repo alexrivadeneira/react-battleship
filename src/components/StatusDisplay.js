@@ -5,8 +5,8 @@ class StatusDisplay extends Component {
 
   render() {
   	const displayStyle = {
-  		border: "1px solid black",
   		padding: "5px",
+      background: "linear-gradient(to bottom, #f2f6f8 0%,#d8e1e7 50%,#b5c6d0 51%,#e0eff9 100%)",
   	};
 
     const playerScore = {
@@ -24,8 +24,6 @@ class StatusDisplay extends Component {
       textAlign: "center",
       fontSize: "25px",
     }
-
-  	const showCurrentPlayer = this.props.playersTurn ? <span>Human</span> : <span>Computer</span>;
 
     return (
       <div style={displayStyle}>

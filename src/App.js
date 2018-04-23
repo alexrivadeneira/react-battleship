@@ -1,14 +1,188 @@
 import React, { Component } from 'react';
 import Game from '././components/Game';
 
+const BOATCODE_NAME = {
+	"B": "Battleship",
+	"C": "Carrier",
+	"S": "Submarine",
+	"CG": "Cargo",
+	"P": "Patrol"
+};
+
+const OFFSETS = {
+	"left": [0, -1],
+	"right": [0, 1],
+	"up": [-1, 0],
+	"down": [1, 0],
+};
 
 
 class App extends Component {
 
 	componentDidMount(){
 		this.refreshRadarMap();
-		document.body.style.backgroundColor = "#000";
+		document.body.style.background = "linear-gradient(to bottom, #45484d 0%,#000000 100%)";
 	}
+
+
+	processMove = (missleSource,row,col) => {
+
+		console.log(missleSource, row, col);
+
+		const missleTarget = missleSource === "player" ? "comp" : "player";
+		const stuffInTargetSpace = this.state[missleTarget].shipsDisplay[row][col];
+
+		// update visited map for computer
+		if(missleSource === "comp"){
+			let visitedMapUpdate = this.state.comp.visited;
+			visitedMapUpdate[row][col] = true;
+			let compUpdate = this.state.comp;
+			compUpdate.visited = visitedMapUpdate;
+			this.setState({comp: compUpdate});
+		}
+
+		if(stuffInTargetSpace === "C" ||
+			stuffInTargetSpace === "P" ||
+			stuffInTargetSpace === "CG" ||
+			stuffInTargetSpace === "B" ||
+			stuffInTargetSpace === "S"){
+
+			this.hitAShip(stuffInTargetSpace, missleTarget, row, col);
+			this.updateHitsMap(missleSource, true, row, col);
+
+
+		} else if (stuffInTargetSpace === "X"){
+			this.updateStatusMessage("Already hit!");
+		} else {
+			this.updateHitsMap(missleSource, false, row, col);
+			this.updateStatusMessage("Miss!");
+		}
+
+		this.setState(
+			this.checkWin(), 
+			this.refreshRadarMap(), 
+			this.changePlayers()
+		);
+	}	
+
+	hitAShip = (shipCode, missleTarget, row, col) => {
+		this.updateStatusMessage("Hit!");
+
+		let currentShipDataOnTarget = this.state[missleTarget].shipsData[shipCode];
+
+		let functionalUnitsUpdate = currentShipDataOnTarget.functionalUnits;
+		const destroyedUnits = currentShipDataOnTarget.destroyedUnits;
+
+		let idxToRemove;
+
+		for(let i = 0; i < functionalUnitsUpdate.length; i++){
+			if(this.checkEqualArrays(functionalUnitsUpdate[i], [row, col])){
+				idxToRemove = i;
+			}
+		}
+
+		functionalUnitsUpdate.splice(idxToRemove, 1);
+
+		this.checkForDestroyedShip(missleTarget, functionalUnitsUpdate, shipCode, row, col);
+
+		// run after you have hit but not destroyed a ship
+		if(functionalUnitsUpdate.length !== 0){
+			let comp = this.state.comp;
+			this.setState({...comp});
+			this.updatesForCompHit(row,col);
+		}
+
+		const updatedDestroyedUnits = [...destroyedUnits, [row, col]];
+
+		currentShipDataOnTarget.functionalUnits = functionalUnitsUpdate;
+		currentShipDataOnTarget.destroyedUnits = updatedDestroyedUnits;
+
+		this.setState({currentShipDataOnTarget});
+	}
+
+	checkForDestroyedShip = (missleTarget, functionalUnits, shipCode, row, col) => {
+		if(functionalUnits.length === 0){
+			const message = BOATCODE_NAME[shipCode] + " sunk!";
+			this.updateStatusMessage(message);
+			this.decrementRemainingShips(missleTarget);
+
+			// need to refactor:
+			// basically, if it's the computer, then you need to clear out inFocus list because you already blew up the ship
+			if(missleTarget === "player"){
+				console.log("blew up the ship, can clear out comp tracking data");
+				let comp = this.state.comp;
+				comp.trackingShip = false;
+				comp.hitsInFocus = [];
+				comp.targetInFocus = [];
+
+				this.setState({...comp});
+			}
+		}
+	}
+
+	updatesForCompHit(row, col){
+	// feels unwieldly and inelegant
+
+	console.log("update for comp hit runnign");
+
+		// if you have two hits in a row, now you can search a line
+		let hits = this.state.comp.hitsInFocus;
+		console.log("hits in focus addding one!");
+		hits.push([row, col]);
+
+		if(this.state.comp.trackingShip === true){
+			console.log(">>tracking ship path only")
+			return;
+			// stop the whole thing before you check hitsInFocus length again, because you've already found all the points in a line you should check which will result in blowing up the ship
+			// could this ever go wrong?
+		}
+		else if(this.state.comp.hitsInFocus.length === 2){
+			console.log(">>hitsinfocus");
+			// get the common direction and then keep adding those to neighbors radaiating out
+
+			// clear out anything in targetInFocus
+
+			// determine direction
+
+			// get neighbors in one direction
+			let neighbors = this.getNeighborsOneDirection(hits[0], hits[1]);
+			let comp = this.state.comp;
+			comp.targetInFocus = neighbors; 
+			comp.trackingShip = true;
+			this.setState({...comp});
+
+		} else {
+		// BUT, while you're tracking a ship, you don't need to do this at all
+		// otherwise, add the neighbors around the hit to the search queue
+			
+			console.log(">>>>adding neighbors, comp hit");
+			let targetUpdate = this.state.comp.targetInFocus;
+			let neighbors = this.getNeighbors(row, col);
+			for(let i = 0; i < neighbors.length; i++){
+				targetUpdate.push(neighbors[i]);
+			}
+			let compUpdate = this.state.comp;
+			compUpdate.targetInFocus = targetUpdate;
+			this.setState({comp: compUpdate});			
+		}
+
+	}		
+
+	getNeighborsOneDirection = (pt1, pt2) => {
+		let newNeighbors = [];
+
+		if(pt1[0] === pt2[0]){
+			for(let row = 9; row >= 0; row--){
+				newNeighbors.push([row, pt1[1]]);
+			}
+		} else if (pt1[1] === pt2[1]){
+			for(let col = 9; col >= 0; col--){
+				newNeighbors.push([pt1[0], col]);
+			}
+
+		}
+		return newNeighbors;
+	};
 
 	refreshRadarMap(){
 		const compShipMap = this.newShipMap(this.state.comp.shipsData, this.state.comp.shipsDisplay);
@@ -67,11 +241,12 @@ class App extends Component {
 
 	compMakeRandomMove = () => {
 
+
 		let newRow = Math.round(Math.random() * 9);
 		let newCol = Math.round(Math.random() * 9);
 
 		if(this.state.targetInFocus.length === 0){
-			while(this.state.comp.visited[newRow][newCol] == true){
+			while(this.state.comp.visited[newRow][newCol] === true){
 				newRow = Math.round(Math.random() * 9);
 				newCol = Math.round(Math.random() * 9);
 			}
@@ -83,17 +258,9 @@ class App extends Component {
 			this.fireMissle("comp", tryNextCoordinates[0], tryNextCoordinates[1]);
 		}
 		this.updateStatusMessage("COMPUTER FIRING!");
-
-
 	}
 
 	getNeighbors(row, col){
-		const OFFSETS = {
-			"left": [0, -1],
-			"right": [0, 1],
-			"up": [-1, 0],
-			"down": [1, 0],
-		};
 
 		let possibleNeighbors = [];
 
@@ -118,57 +285,6 @@ class App extends Component {
 
 		currPlayer.remainingShips = shipsNum;
 		this.setState({playerName: currPlayer});
-	}
-
-	hitAShip = (shipCode, missleTarget, row, col) => {
-		this.updateStatusMessage("Hit!");
-
-		let currentShipDataOnTarget = this.state[missleTarget].shipsData[shipCode];
-
-		let functionalUnitsUpdate = currentShipDataOnTarget.functionalUnits;
-		const destroyedUnits = currentShipDataOnTarget.destroyedUnits;
-
-		let idxToRemove;
-
-		for(let i = 0; i < functionalUnitsUpdate.length; i++){
-			if(this.checkEqualArrays(functionalUnitsUpdate[i], [row, col])){
-				idxToRemove = i;
-			}
-		}
-
-		functionalUnitsUpdate.splice(idxToRemove, 1);
-
-		const BOATCODE_NAME = {
-			"B": "Battleship",
-			"C": "Carrier",
-			"S": "Submarine",
-			"CG": "Cargo",
-			"P": "Patrol"
-		};
-
-		if(functionalUnitsUpdate.length === 0){
-			const message = BOATCODE_NAME[shipCode] + " sunk!";
-			this.updateStatusMessage(message);
-			this.decrementRemainingShips(missleTarget);
-
-			// need to refactor:
-			// basically, if it's the computer, then you need to clear out inFocus list because you already blew up the ship
-			if(missleTarget === "player"){
-				console.log("blew up the ship, can clear out");
-				let compUpdate = this.state.comp;
-				let targetInFocusUpdate = this.state.comp.targetInFoucs;
-				targetInFocusUpdate = [];
-				compUpdate.targetInFocus = targetInFocusUpdate;
-				this.setState({comp: compUpdate});
-			}
-		}
-
-		const updatedDestroyedUnits = [...destroyedUnits, [row, col]];
-
-		currentShipDataOnTarget.functionalUnits = functionalUnitsUpdate;
-		currentShipDataOnTarget.destroyedUnits = updatedDestroyedUnits;
-
-		this.setState({currentShipDataOnTarget});
 	}
 
 	checkEqualArrays = (arr1, arr2) => {
@@ -215,51 +331,6 @@ class App extends Component {
 		});
 	}
 
-	processMove = (missleSource,row,col) => {
-
-		const missleTarget = missleSource === "player" ? "comp" : "player";
-		const stuffInTargetSpace = this.state[missleTarget].shipsDisplay[row][col];
-
-		if(missleSource === "comp"){
-			let visitedMapUpdate = this.state.comp.visited;
-			visitedMapUpdate[row][col] = true;
-			let compUpdate = this.state.comp;
-			compUpdate.visited = visitedMapUpdate;
-			this.setState({comp: compUpdate});
-		}
-
-		if(stuffInTargetSpace === "C" ||
-			stuffInTargetSpace === "P" ||
-			stuffInTargetSpace === "CG" ||
-			stuffInTargetSpace === "B" ||
-			stuffInTargetSpace === "S"){
-
-			this.hitAShip(stuffInTargetSpace, missleTarget, row, col);
-			this.updateHitsMap(missleSource, true, row, col);
-			if(missleSource === "comp"){
-				let targetUpdate = this.state.comp.targetInFocus;
-				let neighbors = this.getNeighbors(row, col);
-				for(let i = 0; i < neighbors.length; i++){
-					targetUpdate.push(neighbors[i]);
-				}
-				let compUpdate = this.state.comp;
-				compUpdate.targetInFocus = targetUpdate;
-				this.setState({comp: compUpdate});
-			}
-		} else if (stuffInTargetSpace === "X"){
-			this.updateStatusMessage("Already hit!");
-		} else {
-			this.updateHitsMap(missleSource, false, row, col);
-			this.updateStatusMessage("Miss!");
-		}
-
-		this.setState(
-			this.checkWin(), 
-			this.refreshRadarMap(), 
-			this.changePlayers()
-		);
-	}
-
 	newShipMap = (shipData, shipsDisplay) => {
 		let map = shipsDisplay;
 
@@ -277,34 +348,33 @@ class App extends Component {
 		return map;
 	}
 
-
 	state = {
 		player: {
 			remainingShips: 5,
 			shipsData: {
 				//battleship
 				"B": {
-					functionalUnits: [[0,9],[1,9],[2,9],[3,9]],
+					functionalUnits: [[0,1],[1,1],[2,1],[3,1]],
 					destroyedUnits: [],
 				},
 				//carrier
 				"C": {
-					functionalUnits: [[0,8],[1,8],[2,8],[3,8],[4,8]],
+					functionalUnits: [[1,3],[2,3],[3,3],[4,3],[5,3]],
 					destroyedUnits: [],				
 				},
 				//patrol			
 				"P": {
-					functionalUnits: [[5,8],[6,8]],
+					functionalUnits: [[0,5],[0,6]],
 					destroyedUnits: [],				
 				},
 				//submarine
 				"S": {
-					functionalUnits: [[0,6],[1,6],[2,6]],
+					functionalUnits: [[9,2],[9,3],[9,4]],
 					destroyedUnits: [],				
 				},
 				//cargo			
 				"CG": {
-					functionalUnits: [[5,0],[5,1],[5,2],[5,3]],
+					functionalUnits: [[8,4],[8,5],[8,6],[8,7]],
 					destroyedUnits: [],				
 				},									
 			},
@@ -336,6 +406,7 @@ class App extends Component {
 				],		
 		},
 		comp: {
+			trackingShip: false,
 			visited: 
 				[
 				[false,false,false,false,false,false,false,false,false,false],
@@ -355,27 +426,27 @@ class App extends Component {
 			shipsData: {
 				//battleship
 				"B": {
-					functionalUnits: [[0,0], [0,1], [0,2], [0,3]],
+					functionalUnits: [[0,9],[1,9],[2,9],[3,9],[4,9]],
 					destroyedUnits: [],
 				},
 				//carrier
 				"C": {
-					functionalUnits: [[1,2], [2,2], [3,2], [4,2], [5,2]],
+					functionalUnits: [[0,8],[1,8],[2,8],[3,8],[4,8],[5,8]],
 					destroyedUnits: [],				
 				},
 				//patrol			
 				"P": {
-					functionalUnits: [[1,9],[2,9]],
+					functionalUnits: [[5,8],[6,8],[7,8]],
 					destroyedUnits: [],				
 				},
 				//submarine
 				"S": {
-					functionalUnits: [[8,1],[8,2],[8,3]],
+					functionalUnits: [[0,6],[1,6],[2,6],[3,6]],
 					destroyedUnits: [],				
 				},
 				//cargo			
 				"CG": {
-					functionalUnits: [[9,0],[9,1],[9,2],[9,3]],
+					functionalUnits: [[5,0],[5,1],[5,2],[5,3],[5,4],[5,5]],
 					destroyedUnits: [],				
 				},									
 			},	
@@ -415,7 +486,6 @@ class App extends Component {
   render() {
 
 	const globalStyle = {
-		background: "#000",
 		color: "red",
 	}
 
@@ -440,7 +510,5 @@ class App extends Component {
     );
   }
 }
-
-
 
 export default App;

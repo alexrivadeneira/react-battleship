@@ -6,14 +6,14 @@ class PlayerRadar extends Component {
     const boardStyle = {
       width: "270px",
       display: "grid",
-      gridTemplateColumns: "27px 27px 27px 27px 27px 27px 27px 27px 27px 27px",
+      boxShadow: "5px 10px 20px #000",
+      gridTemplateColumns: "27px 27px 27px 27px 27px 27px 27px 27px 27px 27px",   
     };
 
     const mapStyle = {
       display: "inline-block",
       padding: "15px",
-      border: "2px solid black",
-    }    
+    }     
 
   	let spaces = [];
   	let index = 0;
