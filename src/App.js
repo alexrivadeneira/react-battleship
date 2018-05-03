@@ -109,7 +109,6 @@ class App extends Component {
 			// need to refactor:
 			// basically, if it's the computer, then you need to clear out inFocus list because you already blew up the ship
 			if(missleTarget === "player"){
-				console.log("blew up the ship, can clear out comp tracking data");
 				let comp = this.state.comp;
 				comp.trackingShip = false;
 				comp.hitsInFocus = [];
@@ -123,21 +122,16 @@ class App extends Component {
 	updatesForCompHit(row, col){
 	// feels unwieldly and inelegant
 
-	console.log("update for comp hit runnign");
-
 		// if you have two hits in a row, now you can search a line
 		let hits = this.state.comp.hitsInFocus;
-		console.log("hits in focus addding one!");
 		hits.push([row, col]);
 
 		if(this.state.comp.trackingShip === true){
-			console.log(">>tracking ship path only")
 			return;
 			// stop the whole thing before you check hitsInFocus length again, because you've already found all the points in a line you should check which will result in blowing up the ship
 			// could this ever go wrong?
 		}
 		else if(this.state.comp.hitsInFocus.length === 2){
-			console.log(">>hitsinfocus");
 			// get the common direction and then keep adding those to neighbors radaiating out
 
 			// clear out anything in targetInFocus
@@ -155,7 +149,6 @@ class App extends Component {
 		// BUT, while you're tracking a ship, you don't need to do this at all
 		// otherwise, add the neighbors around the hit to the search queue
 			
-			console.log(">>>>adding neighbors, comp hit");
 			let targetUpdate = this.state.comp.targetInFocus;
 			let neighbors = this.getNeighbors(row, col);
 			for(let i = 0; i < neighbors.length; i++){
@@ -168,16 +161,17 @@ class App extends Component {
 
 	}		
 
+	//TODO: Change so that we're not adding in the given points
 	getNeighborsOneDirection = (pt1, pt2) => {
 		let newNeighbors = [];
 
 		if(pt1[0] === pt2[0]){
-			for(let row = 9; row >= 0; row--){
-				newNeighbors.push([row, pt1[1]]);
-			}
-		} else if (pt1[1] === pt2[1]){
 			for(let col = 9; col >= 0; col--){
 				newNeighbors.push([pt1[0], col]);
+			}
+		} else if (pt1[1] === pt2[1]){
+			for(let row = 9; row >= 0; row--){
+				newNeighbors.push([row, pt1[1]]);
 			}
 
 		}
@@ -302,7 +296,6 @@ class App extends Component {
 	updateHitsMap = (player, hit, row, col) => {
 
 		const opponent = player === "player" ? "comp" : "player";
-		console.log(player, opponent);
 
 		let currPlayer = this.state[player];
 		let opponentPlayer = this.state[opponent];
@@ -314,11 +307,9 @@ class App extends Component {
 		if(hit){
 			currMap[row][col] = 2;
 		} else {
-			console.log("marking a miss");
 			currMap[row][col] = 1;
 			// also, add the miss to the opposite player's display
 			opponentDisplayMap[row][col] = "M";
-			console.log("ODM ", opponentDisplayMap);
 		}
 
 		currPlayer.hits = currMap;

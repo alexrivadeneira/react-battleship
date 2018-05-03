@@ -23,3 +23,17 @@ describe('getNeighbors', () => {
 
   });
 });
+
+
+describe('getNeighborsOneDirection', () => {
+  it('should find the common axis between two points and then return all points along that axis', () => {
+  	const point1 = [2,1]
+  	const point2 = [3,1]
+    const neighborsInLine = [[9,1],[8,1],[7,1],[6,1],[5,1],[4,1],[3,1],[2,1],[1,1],[0,1]];
+
+  	const wrapper = shallow(<App />);
+  	expect(wrapper.instance().getNeighborsOneDirection(point1, point2)).toEqual(neighborsInLine);
+
+  });
+
+});
