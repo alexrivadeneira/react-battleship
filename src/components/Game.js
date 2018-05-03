@@ -13,7 +13,6 @@ class Game extends Component {
   	};
     return (
       <div className="game"> 
-        <h3>Game</h3> 
 
         <StatusDisplay
           statusMessage={this.props.statusMessage} 
@@ -28,7 +27,6 @@ class Game extends Component {
   	      	playerShips={this.props.playerShips}
   	      />  
   	      <PlayerRadar
-            playerShips={this.props.playerShip}
   	      	playerHits={this.props.playerHits}
   	      	fireMissle={this.props.fireMissle}
 
