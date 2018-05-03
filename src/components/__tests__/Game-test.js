@@ -25,6 +25,5 @@ describe('Game Component', () => {
 	 	expect(wrapper.find(PlayerShipsMap).length).toEqual(1);
 	 });	 
 
-	 // light-weight integration type test to see if props are getting passed correctly from Game downward
-
 })
+

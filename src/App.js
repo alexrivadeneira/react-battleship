@@ -347,6 +347,90 @@ class App extends Component {
 		return map;
 	}
 
+	randomlyPlaceShips(){
+
+		let ships = [5,4,3,2,1];
+		let grid = 				[
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+				];
+
+
+		let path = [];
+		let finalPaths = [];
+
+		let shipsData = {
+				//battleship
+				"B": {
+					functionalUnits: [],
+					destroyedUnits: [],
+				},
+				//carrier
+				"C": {
+					functionalUnits: [],
+					destroyedUnits: [],				
+				},
+				//patrol			
+				"P": {
+					functionalUnits: [],
+					destroyedUnits: [],				
+				},
+				//submarine
+				"S": {
+					functionalUnits: [],
+					destroyedUnits: [],				
+				},
+				//cargo			
+				"CG": {
+					functionalUnits: [],
+					destroyedUnits: [],				
+				},									
+			};
+
+		for(let i = 0; i < ships.length; i++){
+			let randRow = Math.round(Math.random() * 9);
+			let randCol = Math.round(Math.random() * 9);			
+			finalPaths.push(findPath(randRow, randCol, ships[i]));
+		}
+
+		function findPath(x, y, steps){
+			if(x > 9 || x < 0 || y > 9 || y < 0){
+				return false;
+			}
+			if(grid[x][y] !== 0){
+				return false;
+			}
+			path.push([x,y]);
+			if(path.length === steps){
+				return;
+			}
+			if(findPath(x + 1, y, steps)){
+				return true;
+			}
+			if(findPath(x - 1, y, steps)){
+				return true;
+			}
+			if(findPath(x, y + 1, steps)){
+				return true;
+			}
+			if(findPath(x, y -1, steps)){
+				return true;
+			}
+			path.pop();
+			return false;
+		}
+
+	}
+
+
 	state = {
 		player: {
 			remainingShips: 5,
