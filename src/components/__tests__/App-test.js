@@ -37,3 +37,12 @@ describe('getNeighborsOneDirection', () => {
   });
 
 });
+
+describe('randomlyPlaceShips', () => {
+  it('should return a bunch of randomly placed ships', () => {
+
+    const wrapper = shallow(<App />);
+    expect(wrapper.instance().randomlyPlaceShips()).toEqual([[0,1],[1,1]]);
+
+  });
+});

@@ -20,17 +20,13 @@ const OFFSETS = {
 class App extends Component {
 
 	componentDidMount(){
+		this.randomlyChooseBoardsAtBeginningOfGame();
 		this.refreshRadarMap();
 		document.body.style.background = "linear-gradient(to bottom, #45484d 0%,#000000 100%)";
 	}
 
 
 	processMove = (missleSource,row,col) => {
-
-		console.log(missleSource, row, col);
-		console.log("tracking? ", this.state.comp.trackingShip);
-		console.log("TIF ", this.state.comp.targetInFocus);
-		console.log("HIF: ", this.state.comp.hitsInFocus);
 
 		const missleTarget = missleSource === "player" ? "comp" : "player";
 		const stuffInTargetSpace = this.state[missleTarget].shipsDisplay[row][col];
@@ -347,86 +343,125 @@ class App extends Component {
 		return map;
 	}
 
-	randomlyPlaceShips(){
-
-		let ships = [5,4,3,2,1];
-		let grid = 				[
+	randomlyChooseBoardsAtBeginningOfGame(){
+		const boards = [
+			[
+				[0,0,0,0,"CG","CG","CG","CG",0,0],
+				[0,"B",0,0,0,0,0,0,0,0],
+				[0,"B",0,0,0,0,0,"P",0,0],
+				[0,"B",0,0,0,0,0,"P",0,0],
+				[0,"B",0,0,0,0,0,0,0,0],
+				[0,"B",0,0,0,0,0,0,0,0],
+				[0,0,0,0,"C","C","C","C","C",0],
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,"S","S","S",0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+			],
+			[
+				["CG",0,0,0,0,0,0,0,0,0],
+				["CG",0,0,0,"S",0,0,0,0,0],
+				["CG",0,0,0,"S",0,0,0,0,0],
+				["CG",0,0,0,"S",0,0,0,0,0],
 				[0,0,0,0,0,0,0,0,0,0],
 				[0,0,0,0,0,0,0,0,0,0],
 				[0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,"B","B","B","B",0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+				["C","C","C","C","C",0,0,0,"P","P"],
+			],	
+			[
 				[0,0,0,0,0,0,0,0,0,0],
 				[0,0,0,0,0,0,0,0,0,0],
+				[0,0,"CG","CG","CG","CG",0,0,0,0],
+				["C",0,0,0,0,0,0,0,0,0],
+				["C",0,0,"B",0,"P","P",0,0,0],
+				["C",0,0,"B",0,0,0,0,0,0],
+				["C",0,0,"B",0,0,"S",0,0,0],
+				["C",0,0,"B",0,0,"S",0,0,0],
+				[0,0,0,0,0,0,0,0,"S",0],
+				[0,0,0,0,0,0,0,0,0,0],
+			],	
+			[
 				[0,0,0,0,0,0,0,0,0,0],
 				[0,0,0,0,0,0,0,0,0,0],
+				[0,0,"S","S","S",0,0,0,0,0],
 				[0,0,0,0,0,0,0,0,0,0],
+				[0,"C",0,0,"P","P",0,0,0,0],
+				[0,"C",0,0,0,0,0,0,0,0],
+				[0,"C",0,"CG","CG","CG","CG",0,0,0],
+				[0,"C",0,0,0,0,0,0,0,0],
+				[0,"C",0,0,"B","B","B","B",0,0],
 				[0,0,0,0,0,0,0,0,0,0],
+			],		
+			[
+				[0,0,0,"B","B","B","B",0,0,0],
 				[0,0,0,0,0,0,0,0,0,0],
-				];
-
-
-		let path = [];
-		let finalPaths = [];
-
-		let shipsData = {
-				//battleship
-				"B": {
-					functionalUnits: [],
-					destroyedUnits: [],
-				},
-				//carrier
-				"C": {
-					functionalUnits: [],
-					destroyedUnits: [],				
-				},
-				//patrol			
-				"P": {
-					functionalUnits: [],
-					destroyedUnits: [],				
-				},
-				//submarine
-				"S": {
-					functionalUnits: [],
-					destroyedUnits: [],				
-				},
-				//cargo			
-				"CG": {
-					functionalUnits: [],
-					destroyedUnits: [],				
-				},									
-			};
-
-		for(let i = 0; i < ships.length; i++){
-			let randRow = Math.round(Math.random() * 9);
-			let randCol = Math.round(Math.random() * 9);			
-			finalPaths.push(findPath(randRow, randCol, ships[i]));
+				[0,0,"P","P",0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,"C",0,0,"S","S","S",0,0,0],
+				[0,"C",0,0,0,0,0,0,0,0],
+				[0,"C",0,"CG","CG","CG","CG",0,0,0],
+				[0,"C",0,0,0,0,0,0,0,0],
+				[0,"C",0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+			],	
+			[
+				[0,0,0,0,"B","B","B","B",0,0],
+				[0,"CG",0,0,0,0,0,0,0,0],
+				[0,"CG",0,0,0,0,0,0,0,0],
+				[0,"CG",0,0,0,0,0,0,0,0],
+				[0,"CG",0,0,0,0,0,0,0,0],
+				[0,"CG",0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,"C","C","C","C","C"],
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,"S","S","S",0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,"P","P"],
+			],													
+		];
+		
+		let randomBoardIndex = Math.round(Math.random() * boards.length);
+		let secondRandomBoard = randomBoardIndex;
+		while(secondRandomBoard === randomBoardIndex){
+			secondRandomBoard = Math.round(Math.random() * boards.length);
 		}
 
-		function findPath(x, y, steps){
-			if(x > 9 || x < 0 || y > 9 || y < 0){
-				return false;
+		let playerBoard = boards[randomBoardIndex];
+		let compBoard = boards[secondRandomBoard];
+
+		let playerShipsData = {	"S": [], 
+								"P": [],
+								"CG": [],
+								"C": [],
+								"B": [],		
+							};
+		let compShipsData = {	"S": [], 
+								"P": [],
+								"CG": [],
+								"C": [],
+								"B": [],		
+							};
+
+		for(let row = 0; row < playerBoard.length; row++){
+			for(let col = 0; col < playerBoard[0].length; col++){
+				if(playerBoard[row][col] !== 0){
+					let shipCode = playerBoard[row][col];
+					playerShipsData[shipCode].push([row,col]);
+				}
 			}
-			if(grid[x][y] !== 0){
-				return false;
-			}
-			path.push([x,y]);
-			if(path.length === steps){
-				return;
-			}
-			if(findPath(x + 1, y, steps)){
-				return true;
-			}
-			if(findPath(x - 1, y, steps)){
-				return true;
-			}
-			if(findPath(x, y + 1, steps)){
-				return true;
-			}
-			if(findPath(x, y -1, steps)){
-				return true;
-			}
-			path.pop();
-			return false;
 		}
+
+		for(let row = 0; row < compBoard.length; row++){
+			for(let col = 0; col < compBoard[0].length; col++){
+				if(compBoard[row][col] !== 0){
+					let shipCode = compBoard[row][col];
+					compShipsData[shipCode].push([row,col]);
+				}
+			}
+		}
+		console.log(playerShipsData);
+		console.log(compShipsData);
+
+		
 
 	}
 
