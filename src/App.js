@@ -428,24 +428,32 @@ class App extends Component {
 		let playerBoard = boards[randomBoardIndex];
 		let compBoard = boards[secondRandomBoard];
 
-		let playerShipsData = {	"S": [], 
-								"P": [],
-								"CG": [],
-								"C": [],
-								"B": [],		
+		let playerShipsData = {	"functionalUnits": 
+									[ 
+										"S": [], 
+										"P": [],
+										"CG": [],
+										"C": [],
+										"B": [],	
+									],
+								"destroyedUnits": [],	
 							};
-		let compShipsData = {	"S": [], 
-								"P": [],
-								"CG": [],
-								"C": [],
-								"B": [],		
+		let compShipsData = {	"functionalUnits": 
+									[ 
+										"S": [], 
+										"P": [],
+										"CG": [],
+										"C": [],
+										"B": [],	
+									],
+								"destroyedUnits": [],	
 							};
 
 		for(let row = 0; row < playerBoard.length; row++){
 			for(let col = 0; col < playerBoard[0].length; col++){
 				if(playerBoard[row][col] !== 0){
 					let shipCode = playerBoard[row][col];
-					playerShipsData[shipCode].push([row,col]);
+					playerShipsData["functionalUnits"][shipCode].push([row,col]);
 				}
 			}
 		}
@@ -454,14 +462,14 @@ class App extends Component {
 			for(let col = 0; col < compBoard[0].length; col++){
 				if(compBoard[row][col] !== 0){
 					let shipCode = compBoard[row][col];
-					compShipsData[shipCode].push([row,col]);
+					compShipsData["functionalUnits"][shipCode].push([row,col]);
 				}
 			}
 		}
 		console.log(playerShipsData);
 		console.log(compShipsData);
 
-		
+
 
 	}
 
@@ -472,27 +480,27 @@ class App extends Component {
 			shipsData: {
 				//battleship
 				"B": {
-					functionalUnits: [[0,1],[1,1],[2,1],[3,1]],
+					functionalUnits: [],
 					destroyedUnits: [],
 				},
 				//carrier
 				"C": {
-					functionalUnits: [[1,3],[2,3],[3,3],[4,3],[5,3]],
+					functionalUnits: [],
 					destroyedUnits: [],				
 				},
 				//patrol			
 				"P": {
-					functionalUnits: [[0,5],[0,6]],
+					functionalUnits: [],
 					destroyedUnits: [],				
 				},
 				//submarine
 				"S": {
-					functionalUnits: [[9,2],[9,3],[9,4]],
+					functionalUnits: [],
 					destroyedUnits: [],				
 				},
 				//cargo			
 				"CG": {
-					functionalUnits: [[8,4],[8,5],[8,6],[8,7]],
+					functionalUnits: [],
 					destroyedUnits: [],				
 				},									
 			},
@@ -544,27 +552,27 @@ class App extends Component {
 			shipsData: {
 				//battleship
 				"B": {
-					functionalUnits: [[0,9],[1,9],[2,9],[3,9],[4,9]],
+					functionalUnits: [],
 					destroyedUnits: [],
 				},
 				//carrier
 				"C": {
-					functionalUnits: [[0,8],[1,8],[2,8],[3,8],[4,8],[5,8]],
+					functionalUnits: [],
 					destroyedUnits: [],				
 				},
 				//patrol			
 				"P": {
-					functionalUnits: [[5,8],[6,8],[7,8]],
+					functionalUnits: [],
 					destroyedUnits: [],				
 				},
 				//submarine
 				"S": {
-					functionalUnits: [[0,6],[1,6],[2,6],[3,6]],
+					functionalUnits: [],
 					destroyedUnits: [],				
 				},
 				//cargo			
 				"CG": {
-					functionalUnits: [[5,0],[5,1],[5,2],[5,3],[5,4],[5,5]],
+					functionalUnits: [],
 					destroyedUnits: [],				
 				},									
 			},	
