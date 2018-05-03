@@ -28,6 +28,9 @@ class App extends Component {
 	processMove = (missleSource,row,col) => {
 
 		console.log(missleSource, row, col);
+		console.log("tracking? ", this.state.comp.trackingShip);
+		console.log("TIF ", this.state.comp.targetInFocus);
+		console.log("HIF: ", this.state.comp.hitsInFocus);
 
 		const missleTarget = missleSource === "player" ? "comp" : "player";
 		const stuffInTargetSpace = this.state[missleTarget].shipsDisplay[row][col];
@@ -68,6 +71,7 @@ class App extends Component {
 	hitAShip = (shipCode, missleTarget, row, col) => {
 		this.updateStatusMessage("Hit!");
 
+		// target's ship data
 		let currentShipDataOnTarget = this.state[missleTarget].shipsData[shipCode];
 
 		let functionalUnitsUpdate = currentShipDataOnTarget.functionalUnits;
@@ -86,11 +90,15 @@ class App extends Component {
 		this.checkForDestroyedShip(missleTarget, functionalUnitsUpdate, shipCode, row, col);
 
 		// run after you have hit but not destroyed a ship
-		if(functionalUnitsUpdate.length !== 0){
-			let comp = this.state.comp;
-			this.setState({...comp});
-			this.updatesForCompHit(row,col);
+
+		if(missleTarget === "player"){
+			if(functionalUnitsUpdate.length !== 0){
+				let comp = this.state.comp;
+				this.setState({...comp});
+				this.updatesForCompHit(row,col);
+			}			
 		}
+
 
 		const updatedDestroyedUnits = [...destroyedUnits, [row, col]];
 
@@ -234,18 +242,18 @@ class App extends Component {
 	}
 
 	compMakeRandomMove = () => {
-
-
 		let newRow = Math.round(Math.random() * 9);
 		let newCol = Math.round(Math.random() * 9);
 
 		if(this.state.targetInFocus.length === 0){
+			console.log("comp is making random move");
 			while(this.state.comp.visited[newRow][newCol] === true){
 				newRow = Math.round(Math.random() * 9);
 				newCol = Math.round(Math.random() * 9);
 			}
 			this.fireMissle("comp", newRow, newCol);
 		} else {
+			console.log("comp is watching a target");
 			let targetInFocus = this.state.targetInFocus;
 			const tryNextCoordinates = targetInFocus.pop();
 			this.setState({...targetInFocus});

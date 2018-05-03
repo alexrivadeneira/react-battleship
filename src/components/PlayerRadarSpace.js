@@ -38,7 +38,7 @@ class PlayerRadarSpace extends Component {
         className="space" 
         style={spaceStyle}
         onClick={() => this.handleClick(this.props.row, this.props.col)}
-        >
+        >{this.props.row} {this.props.col}
       </div>
     );
   }
