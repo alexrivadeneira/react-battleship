@@ -419,41 +419,66 @@ class App extends Component {
 			],													
 		];
 		
-		let randomBoardIndex = Math.round(Math.random() * boards.length);
+		let randomBoardIndex = Math.round(Math.random() * (boards.length -1));
 		let secondRandomBoard = randomBoardIndex;
 		while(secondRandomBoard === randomBoardIndex){
-			secondRandomBoard = Math.round(Math.random() * boards.length);
+			secondRandomBoard = Math.round(Math.random() * (boards.length - 1));
 		}
+		console.log(boards.length, randomBoardIndex, secondRandomBoard);
 
 		let playerBoard = boards[randomBoardIndex];
 		let compBoard = boards[secondRandomBoard];
 
-		let playerShipsData = {	"functionalUnits": 
-									[ 
-										"S": [], 
-										"P": [],
-										"CG": [],
-										"C": [],
-										"B": [],	
-									],
-								"destroyedUnits": [],	
-							};
-		let compShipsData = {	"functionalUnits": 
-									[ 
-										"S": [], 
-										"P": [],
-										"CG": [],
-										"C": [],
-										"B": [],	
-									],
-								"destroyedUnits": [],	
-							};
+		let playerShipsData = {			
+									"S": {
+										"functionalUnits": [],
+										"destroyedUnits": [],		
+									},
+									"P": { 							
+										"functionalUnits": [],
+										"destroyedUnits": [],		
+									},
+									"CG": {
+										"functionalUnits": [],
+										"destroyedUnits": [],		
+									},
+									"C": {
+										"functionalUnits": [],
+										"destroyedUnits": [],		
+									},
+									"B": {
+										"functionalUnits": [],
+										"destroyedUnits": [],		
+									},
+								};
+		let compShipsData = {			
+									"S": {
+										"functionalUnits": [],
+										"destroyedUnits": [],		
+									},
+									"P": { 							
+										"functionalUnits": [],
+										"destroyedUnits": [],		
+									},
+									"CG": {
+										"functionalUnits": [],
+										"destroyedUnits": [],		
+									},
+									"C": {
+										"functionalUnits": [],
+										"destroyedUnits": [],		
+									},
+									"B": {
+										"functionalUnits": [],
+										"destroyedUnits": [],		
+									},
+								};
 
 		for(let row = 0; row < playerBoard.length; row++){
 			for(let col = 0; col < playerBoard[0].length; col++){
 				if(playerBoard[row][col] !== 0){
 					let shipCode = playerBoard[row][col];
-					playerShipsData["functionalUnits"][shipCode].push([row,col]);
+					playerShipsData[shipCode]["functionalUnits"].push([row,col]);
 				}
 			}
 		}
@@ -462,12 +487,21 @@ class App extends Component {
 			for(let col = 0; col < compBoard[0].length; col++){
 				if(compBoard[row][col] !== 0){
 					let shipCode = compBoard[row][col];
-					compShipsData["functionalUnits"][shipCode].push([row,col]);
+					compShipsData[shipCode]["functionalUnits"].push([row,col]);
 				}
 			}
 		}
-		console.log(playerShipsData);
-		console.log(compShipsData);
+
+		let currPlayerState = this.state.player;
+		let currCompState = this.state.comp;
+
+		currPlayerState.shipsData = playerShipsData;
+		currCompState.shipsData = compShipsData;
+		
+		this.setState({ 
+			player: currPlayerState,
+			comp: currCompState,
+		});
 
 
 
