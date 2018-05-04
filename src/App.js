@@ -27,6 +27,7 @@ class App extends Component {
 
 
 	processMove = (missleSource,row,col) => {
+		console.log(missleSource, row, col);
 
 		const missleTarget = missleSource === "player" ? "comp" : "player";
 		const stuffInTargetSpace = this.state[missleTarget].shipsDisplay[row][col];
@@ -136,6 +137,7 @@ class App extends Component {
 			// could this ever go wrong?
 		}
 		else if(this.state.comp.hitsInFocus.length === 2){
+			console.log("the computer has locked onto two hits in a row...watch out!")
 			// get the common direction and then keep adding those to neighbors radaiating out
 
 			// clear out anything in targetInFocus
@@ -143,7 +145,7 @@ class App extends Component {
 			// determine direction
 
 			// get neighbors in one direction
-			let neighbors = this.getNeighborsOneDirection(hits[0], hits[1]);
+			let neighbors = this.afterTwoHitsInRowReturnTargetedNeighbors(hits[0], hits[1]);
 			let comp = this.state.comp;
 			comp.targetInFocus = neighbors; 
 			comp.trackingShip = true;
@@ -181,6 +183,68 @@ class App extends Component {
 		}
 		return newNeighbors;
 	};
+
+	// TODO: refactor
+	afterTwoHitsInRowReturnTargetedNeighbors(point1, point2) {
+		let newNeighbors = [];
+		let sharedIndex;
+		let sharedRow;
+		let smallerPoint;
+		let largerPoint;
+
+		if(point1[0] === point2[0]){
+		  // shared row
+			sharedIndex = point1[0];
+			sharedRow = true;
+			
+			smallerPoint = point1[1] > point2[1] ? point2[1] : point1[1];
+
+			largerPoint = point1[1] > point2[1] ? point1[1] : point2[1];					
+			
+		} else if (point1[1] === point2[1]){
+		  //shared col 
+		  sharedIndex = point1[1];
+		  sharedRow = false;
+
+			smallerPoint = point1[0] > point2[0] ? point2[0] : point1[0];
+			largerPoint = point1[0] > point2[0] ? point1[0] : point2[0];	  
+		}
+		
+
+		let left = 0;
+		let right = 9;
+		
+		let addLeft = true;
+		
+		console.log(smallerPoint,largerPoint);
+		
+		for(let i = 0; i < 10; i++){
+		  if(addLeft === true){
+		    if(left >= 0){
+		      if(sharedRow === true){
+		        newNeighbors.push([sharedIndex, left]);
+		      } else {
+		        newNeighbors.push([left, sharedIndex]);
+		      }
+		        left++;
+		      }
+		      addLeft = false;
+		  } else {
+		    if(right <= 9){
+		      if(sharedRow === true){
+		        newNeighbors.push([sharedIndex, right]);
+		      } else {
+		        newNeighbors.push([right, sharedIndex]);
+		      }
+		      right--;
+		    }
+		    addLeft = true;
+		  }
+		}
+
+		return newNeighbors;
+		
+	}
 
 	refreshRadarMap(){
 		const compShipMap = this.newShipMap(this.state.comp.shipsData, this.state.comp.shipsDisplay);
@@ -250,6 +314,7 @@ class App extends Component {
 			this.fireMissle("comp", newRow, newCol);
 		} else {
 			console.log("comp is watching a target");
+			console.log(this.state.comp.hitsInFocus);
 			let targetInFocus = this.state.targetInFocus;
 			const tryNextCoordinates = targetInFocus.pop();
 			this.setState({...targetInFocus});
@@ -416,7 +481,19 @@ class App extends Component {
 				[0,0,0,0,0,0,0,0,0,0],
 				[0,"S","S","S",0,0,0,0,0,0],
 				[0,0,0,0,0,0,0,0,"P","P"],
-			],													
+			],
+			[
+				[0,0,0,0,"CG","CG","CG","CG",0,0],
+				[0,"P",0,0,0,0,0,0,0,0],
+				[0,"P",0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,"B","B","B","B"],
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,"C","C","C","C","C",0],
+				[0,0,0,0,0,0,0,0,0,0],
+				[0,"S","S","S",0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0],
+			],																
 		];
 		
 		let randomBoardIndex = Math.round(Math.random() * (boards.length -1));

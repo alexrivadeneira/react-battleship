@@ -38,11 +38,11 @@ describe('getNeighborsOneDirection', () => {
 
 });
 
-describe('randomlyPlaceShips', () => {
-  it('should return a bunch of randomly placed ships', () => {
+describe('afterTwoHitsInRowReturnTargetedNeighbors', () => {
+  it('should return correct neighbors to follow up on', () => {
 
     const wrapper = shallow(<App />);
-    expect(wrapper.instance().randomlyPlaceShips()).toEqual([[0,1],[1,1]]);
+    expect(wrapper.instance().afterTwoHitsInRowReturnTargetedNeighbors([1,1],[2,1])).toEqual([[9,1],[8,1],[7,1],[6,1],[5,1],[4,1],[3,1],[0,1]]);
 
   });
 });
